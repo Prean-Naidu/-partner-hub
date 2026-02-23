@@ -1,0 +1,2266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PartnerHub — Partner Revenue Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;
+  --bg2:#eeece7;
+  --surface:#ffffff;
+  --surface2:#faf9f6;
+  --border:#e2dfd8;
+  --border2:#d4d0c8;
+  --text:#1a1916;
+  --text2:#5a574f;
+  --text3:#9b9790;
+  --accent:#d4500a;
+  --accent-light:#fdf0ea;
+  --accent-border:#f5c5a8;
+  --green:#1a7a4a;
+  --green-light:#e8f5ee;
+  --green-border:#a8d8be;
+  --yellow:#b58a00;
+  --yellow-light:#fdf8e8;
+  --yellow-border:#e8d48a;
+  --red:#c0392b;
+  --red-light:#fdf0ee;
+  --red-border:#f0b8b0;
+  --blue:#1a5fa0;
+  --blue-light:#e8f0fa;
+  --blue-border:#a8c8f0;
+  --font:'Outfit',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --radius:10px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.05);
+  --shadow-lg:0 4px 6px rgba(0,0,0,0.05),0 10px 40px rgba(0,0,0,0.1);
+}
+
+html{font-size:15px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex}
+
+/* ── SIDEBAR ── */
+#sidebar{
+  width:232px;flex-shrink:0;background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;
+  z-index:40;
+}
+.sidebar-logo{
+  padding:1.5rem 1.25rem 1rem;
+  display:flex;align-items:center;gap:.6rem;
+  border-bottom:1px solid var(--border);
+}
+.logo-mark{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:.9rem;color:#fff;letter-spacing:-.02em;
+}
+.logo-text{font-weight:700;font-size:1rem;letter-spacing:-.02em}
+.logo-sub{font-size:.65rem;color:var(--text3);font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-top:-2px}
+
+.sidebar-section{padding:.75rem 0 .25rem;border-bottom:1px solid var(--border)}
+.sidebar-section-label{
+  font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text3);padding:0 1.25rem .5rem;
+}
+.nav-item{
+  display:flex;align-items:center;gap:.7rem;
+  padding:.6rem 1.25rem;margin:1px .5rem;border-radius:8px;
+  font-size:.85rem;font-weight:500;color:var(--text2);
+  cursor:pointer;transition:all .15s;text-decoration:none;
+}
+.nav-item:hover{background:var(--bg);color:var(--text)}
+.nav-item.active{background:var(--accent-light);color:var(--accent);font-weight:600}
+.nav-item.active .nav-icon{color:var(--accent)}
+.nav-icon{font-size:1rem;width:18px;text-align:center;flex-shrink:0}
+.nav-badge{
+  margin-left:auto;background:var(--accent);color:#fff;
+  border-radius:20px;font-size:.62rem;font-weight:700;
+  padding:1px 6px;min-width:18px;text-align:center;
+}
+.nav-badge.yellow{background:var(--yellow)}
+.nav-badge.red{background:var(--red)}
+
+.sidebar-bottom{margin-top:auto;padding:1rem;border-top:1px solid var(--border)}
+.user-row{display:flex;align-items:center;gap:.6rem}
+.user-avatar{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--accent);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;font-weight:700;flex-shrink:0
+}
+.user-name{font-size:.8rem;font-weight:600}
+.user-role{font-size:.7rem;color:var(--text3)}
+
+/* ── MAIN ── */
+#main{margin-left:232px;flex:1;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── TOPBAR ── */
+.topbar{
+  height:56px;background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 1.75rem;gap:1rem;
+  position:sticky;top:0;z-index:30;
+}
+.topbar-title{font-size:1rem;font-weight:700;letter-spacing:-.02em}
+.topbar-sub{font-size:.78rem;color:var(--text3);margin-left:.5rem}
+.topbar-actions{margin-left:auto;display:flex;gap:.6rem;align-items:center}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.5rem 1rem;border-radius:8px;font-family:var(--font);
+  font-size:.82rem;font-weight:600;cursor:pointer;border:none;
+  transition:all .15s;text-decoration:none;white-space:nowrap;
+}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#b8440a;transform:translateY(-1px);box-shadow:0 4px 12px rgba(212,80,10,.3)}
+.btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border2)}
+.btn-secondary:hover{background:var(--bg2);border-color:var(--border2)}
+.btn-ghost{background:transparent;color:var(--text2);padding:.4rem .7rem}
+.btn-ghost:hover{background:var(--bg);color:var(--text)}
+.btn-sm{padding:.35rem .7rem;font-size:.75rem}
+.btn-danger{background:var(--red-light);color:var(--red);border:1px solid var(--red-border)}
+.btn-danger:hover{background:var(--red);color:#fff}
+.btn-success{background:var(--green-light);color:var(--green);border:1px solid var(--green-border)}
+.btn-success:hover{background:var(--green);color:#fff}
+
+/* ── CONTENT ── */
+.page{display:none;flex:1;flex-direction:column}
+.page.active{display:flex}
+.page-body{padding:1.5rem 1.75rem;flex:1}
+
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem;transition:all .2s;
+}
+.stat-card:hover{box-shadow:var(--shadow)}
+.stat-label{font-size:.72rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.4rem}
+.stat-value{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.stat-delta{font-size:.75rem;margin-top:.3rem;font-weight:500}
+.delta-up{color:var(--green)}
+.delta-warn{color:var(--yellow)}
+.delta-down{color:var(--red)}
+
+/* ── SECTION ── */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.section-title{font-size:.9rem;font-weight:700;letter-spacing:-.01em}
+.section-sub{font-size:.78rem;color:var(--text3);margin-top:.1rem}
+
+/* ── TABLE ── */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{
+  background:var(--bg);font-size:.7rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--text3);
+  padding:.65rem 1rem;text-align:left;border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+.data-table td{
+  padding:.8rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);
+  vertical-align:middle;
+}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--bg)}
+.data-table .mono{font-family:var(--mono);font-size:.75rem}
+
+/* ── BADGES ── */
+.badge{
+  display:inline-flex;align-items:center;gap:.3rem;
+  padding:.2rem .6rem;border-radius:20px;font-size:.7rem;font-weight:700;
+  letter-spacing:.02em;white-space:nowrap;
+}
+.badge-green{background:var(--green-light);color:var(--green);border:1px solid var(--green-border)}
+.badge-yellow{background:var(--yellow-light);color:var(--yellow);border:1px solid var(--yellow-border)}
+.badge-red{background:var(--red-light);color:var(--red);border:1px solid var(--red-border)}
+.badge-blue{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-border)}
+.badge-grey{background:var(--bg2);color:var(--text3);border:1px solid var(--border)}
+.badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* ── PROGRESS ── */
+.progress-wrap{background:var(--bg2);border-radius:4px;height:5px;overflow:hidden;min-width:80px}
+.progress-bar{height:100%;border-radius:4px;background:var(--green);transition:width .3s}
+.progress-bar.warn{background:var(--yellow)}
+.progress-bar.danger{background:var(--red)}
+
+/* ── MODAL ── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(26,25,22,.5);
+  z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(4px);
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  width:100%;max-width:580px;max-height:90vh;overflow-y:auto;
+  box-shadow:var(--shadow-lg);animation:modalIn .2s ease;
+}
+.modal-lg{max-width:780px}
+@keyframes modalIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.modal-head{
+  padding:1.25rem 1.5rem 1rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;background:var(--surface);z-index:1;
+}
+.modal-title{font-size:1rem;font-weight:700}
+.modal-close{
+  width:28px;height:28px;border-radius:6px;border:1px solid var(--border);
+  background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:1rem;color:var(--text3);transition:all .15s;
+}
+.modal-close:hover{background:var(--bg);color:var(--text)}
+.modal-body{padding:1.25rem 1.5rem}
+.modal-footer{
+  padding:1rem 1.5rem;border-top:1px solid var(--border);
+  display:flex;justify-content:flex-end;gap:.6rem;
+  position:sticky;bottom:0;background:var(--surface);
+}
+
+/* ── FORM ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-grid.single{grid-template-columns:1fr}
+.form-group{display:flex;flex-direction:column;gap:.35rem}
+.form-group.span2{grid-column:span 2}
+label{font-size:.75rem;font-weight:700;color:var(--text2);letter-spacing:.03em}
+input,select,textarea{
+  font-family:var(--font);font-size:.85rem;
+  padding:.55rem .75rem;border:1px solid var(--border2);
+  border-radius:8px;background:var(--surface);color:var(--text);
+  transition:all .15s;outline:none;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--accent);box-shadow:0 0 0 3px rgba(212,80,10,.1);
+}
+textarea{resize:vertical;min-height:70px}
+.input-hint{font-size:.7rem;color:var(--text3);margin-top:.1rem}
+.form-section-label{
+  font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text3);margin-bottom:.5rem;margin-top:.25rem;
+  padding-bottom:.4rem;border-bottom:1px solid var(--border);
+}
+
+/* ── TAGS ── */
+.tag{
+  display:inline-flex;align-items:center;gap:.2rem;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:6px;padding:.15rem .5rem;font-size:.72rem;font-weight:500;
+}
+
+/* ── SEARCH / FILTER ── */
+.filter-bar{
+  display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;
+}
+.search-wrap{position:relative;flex:1;min-width:180px;max-width:300px}
+.search-wrap input{padding-left:2rem;width:100%}
+.search-icon{
+  position:absolute;left:.6rem;top:50%;transform:translateY(-50%);
+  color:var(--text3);font-size:.85rem;pointer-events:none;
+}
+.filter-select{min-width:130px}
+
+/* ── EMPTY STATE ── */
+.empty-state{
+  text-align:center;padding:4rem 2rem;color:var(--text3);
+}
+.empty-icon{font-size:2.5rem;margin-bottom:1rem;opacity:.4}
+.empty-title{font-size:.9rem;font-weight:600;color:var(--text2);margin-bottom:.4rem}
+.empty-sub{font-size:.82rem}
+
+/* ── CARDS GRID ── */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
+.partner-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem;transition:all .2s;cursor:pointer;
+}
+.partner-card:hover{box-shadow:var(--shadow-lg);border-color:var(--border2);transform:translateY(-2px)}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.9rem}
+.card-avatar{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:1rem;color:#fff;flex-shrink:0;
+}
+.card-meta{flex:1;margin-left:.75rem}
+.card-name{font-size:.9rem;font-weight:700;line-height:1.2}
+.card-type{font-size:.72rem;color:var(--text3);margin-top:.15rem}
+.card-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--border)}
+.card-stat-label{font-size:.65rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.15rem}
+.card-stat-value{font-size:.85rem;font-weight:700}
+
+/* ── DETAIL PANEL ── */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+.detail-item{}
+.detail-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:.2rem}
+.detail-value{font-size:.88rem;font-weight:500}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:1.5rem}
+.timeline::before{content:'';position:absolute;left:.35rem;top:.5rem;bottom:.5rem;width:1px;background:var(--border2)}
+.tl-item{position:relative;margin-bottom:1.1rem}
+.tl-dot{position:absolute;left:-1.15rem;top:.25rem;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--surface)}
+.tl-dot.green{background:var(--green)}
+.tl-dot.yellow{background:var(--yellow)}
+.tl-dot.grey{background:var(--text3)}
+.tl-date{font-size:.7rem;color:var(--text3);font-weight:500;margin-bottom:.1rem;font-family:var(--mono)}
+.tl-text{font-size:.82rem;font-weight:500}
+.tl-sub{font-size:.76rem;color:var(--text3);margin-top:.1rem}
+
+/* ── CHART ── */
+.chart-wrap{position:relative;height:180px}
+canvas{width:100%!important}
+
+/* ── HUBSPOT STATUS ── */
+.hs-badge{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.25rem .7rem;border-radius:20px;font-size:.72rem;font-weight:700;
+}
+.hs-synced{background:#fff4ee;color:#ff7a59;border:1px solid #ffcab8}
+.hs-not-synced{background:var(--bg2);color:var(--text3);border:1px solid var(--border)}
+
+/* ── TABS ── */
+.tab-row{display:flex;gap:.25rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem}
+.tab-btn{
+  padding:.55rem 1rem;font-size:.8rem;font-weight:600;
+  border:none;background:none;cursor:pointer;color:var(--text3);
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;
+  font-family:var(--font);
+}
+.tab-btn.active{color:var(--accent);border-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text2)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ── ALERT BOX ── */
+.alert{
+  display:flex;align-items:flex-start;gap:.75rem;
+  padding:.9rem 1.1rem;border-radius:var(--radius);margin-bottom:1rem;
+  font-size:.82rem;
+}
+.alert-warn{background:var(--yellow-light);border:1px solid var(--yellow-border);color:var(--yellow)}
+.alert-danger{background:var(--red-light);border:1px solid var(--red-border);color:var(--red)}
+.alert-success{background:var(--green-light);border:1px solid var(--green-border);color:var(--green)}
+.alert-icon{font-size:1rem;flex-shrink:0}
+.alert-text strong{display:block;font-weight:700;margin-bottom:.1rem}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;
+  display:flex;flex-direction:column;gap:.5rem;
+}
+.toast-item{
+  background:var(--text);color:#fff;border-radius:10px;
+  padding:.7rem 1.1rem;font-size:.82rem;font-weight:500;
+  box-shadow:var(--shadow-lg);animation:toastIn .25s ease;
+  display:flex;align-items:center;gap:.5rem;min-width:220px;
+}
+.toast-item.success{background:var(--green)}
+.toast-item.error{background:var(--red)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+/* ── DASHBOARD ── */
+.dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-bottom:1rem}
+.dash-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
+.widget{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow)}
+.widget-title{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:1rem}
+
+/* ── EXPIRY RING ── */
+.expiry-list{display:flex;flex-direction:column;gap:.6rem}
+.expiry-row{
+  display:flex;align-items:center;gap:.75rem;padding:.6rem .8rem;
+  border-radius:8px;background:var(--bg);cursor:pointer;transition:all .15s;
+}
+.expiry-row:hover{background:var(--bg2)}
+.expiry-days{
+  font-family:var(--mono);font-size:.78rem;font-weight:700;
+  min-width:36px;text-align:center;
+}
+.expiry-name{font-size:.82rem;font-weight:600;flex:1}
+.expiry-date{font-size:.72rem;color:var(--text3);font-family:var(--mono)}
+
+/* ── REV SHARE ── */
+.rev-partner-row{
+  display:flex;align-items:center;gap:.75rem;padding:.7rem 0;
+  border-bottom:1px solid var(--border);
+}
+.rev-partner-row:last-child{border-bottom:none}
+.rev-bar-wrap{flex:1;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.rev-bar{height:100%;background:var(--accent);border-radius:3px}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .dash-grid{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .form-group.span2{grid-column:span 1}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">PH</div>
+    <div>
+      <div class="logo-text">PartnerHub</div>
+      <div class="logo-sub">Partner Revenue Platform</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Overview</div>
+    <div class="nav-item active" data-page="dashboard">
+      <span class="nav-icon">⬡</span> Dashboard
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Partners</div>
+    <div class="nav-item" data-page="partners">
+      <span class="nav-icon">◈</span> All Partners
+    </div>
+    <div class="nav-item" data-page="agreements">
+      <span class="nav-icon">◻</span> Agreements
+      <span class="nav-badge red" id="expiring-badge">0</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Pipeline</div>
+    <div class="nav-item" data-page="referrals">
+      <span class="nav-icon">⟳</span> Referrals & Leads
+      <span class="nav-badge yellow" id="leads-badge">0</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Finance</div>
+    <div class="nav-item" data-page="revshare">
+      <span class="nav-icon">◎</span> Rev Share Reports
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Integrations</div>
+    <div class="nav-item" data-page="hubspot">
+      <span class="nav-icon">⟐</span> HubSpot Sync
+    </div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="user-row">
+      <div class="user-avatar">AJ</div>
+      <div>
+        <div class="user-name">Alex Johnson</div>
+        <div class="user-role">Head of Partnerships</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- ═══════════════════ DASHBOARD ═══════════════════ -->
+  <div class="page active" id="page-dashboard">
+    <div class="topbar">
+      <div>
+        <span class="topbar-title">Dashboard</span>
+        <span class="topbar-sub" id="dash-date"></span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="openModal('modal-add-partner')">＋ Add Partner</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="stats-row" id="dash-stats"></div>
+
+      <div class="dash-grid">
+        <div class="widget">
+          <div class="widget-title">Partner Revenue — Last 6 Months</div>
+          <div class="chart-wrap"><canvas id="rev-chart"></canvas></div>
+        </div>
+        <div class="widget">
+          <div class="widget-title">⚠ Expiring Soon</div>
+          <div class="expiry-list" id="dash-expiry-list"></div>
+        </div>
+      </div>
+
+      <div class="dash-grid-3">
+        <div class="widget">
+          <div class="widget-title">Lead Pipeline by Stage</div>
+          <div id="dash-pipeline"></div>
+        </div>
+        <div class="widget">
+          <div class="widget-title">Top Partners by Revenue</div>
+          <div id="dash-top-partners"></div>
+        </div>
+        <div class="widget">
+          <div class="widget-title">Integration Status</div>
+          <div id="dash-integrations"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ PARTNERS ═══════════════════ -->
+  <div class="page" id="page-partners">
+    <div class="topbar">
+      <div>
+        <span class="topbar-title">Partners</span>
+        <span class="topbar-sub" id="partners-count"></span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-secondary" onclick="setView('partners','card')" id="view-card-btn">⊞ Cards</button>
+        <button class="btn btn-secondary" onclick="setView('partners','table')" id="view-table-btn">☰ Table</button>
+        <button class="btn btn-primary" onclick="openModal('modal-add-partner')">＋ Add Partner</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search partners…" id="partner-search" oninput="renderPartners()">
+        </div>
+        <select class="filter-select btn btn-secondary" id="partner-filter-type" onchange="renderPartners()">
+          <option value="">All Types</option>
+          <option>Reseller</option>
+          <option>Referral</option>
+          <option>Technology</option>
+          <option>Agency</option>
+          <option>Affiliate</option>
+        </select>
+        <select class="filter-select btn btn-secondary" id="partner-filter-status" onchange="renderPartners()">
+          <option value="">All Status</option>
+          <option>Active</option>
+          <option>At Risk</option>
+          <option>Inactive</option>
+          <option>Onboarding</option>
+        </select>
+      </div>
+      <div id="partners-view"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ AGREEMENTS ═══════════════════ -->
+  <div class="page" id="page-agreements">
+    <div class="topbar">
+      <div>
+        <span class="topbar-title">Agreements</span>
+        <span class="topbar-sub">Track contract terms, renewal dates & compliance</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="openModal('modal-add-agreement')">＋ New Agreement</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <div id="agreements-alerts"></div>
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search agreements…" id="agr-search" oninput="renderAgreements()">
+        </div>
+        <select class="filter-select btn btn-secondary" id="agr-filter-status" onchange="renderAgreements()">
+          <option value="">All Status</option>
+          <option>Active</option>
+          <option>Expiring Soon</option>
+          <option>Expired</option>
+          <option>Pending Renewal</option>
+          <option>Draft</option>
+        </select>
+        <select class="filter-select btn btn-secondary" id="agr-filter-partner" onchange="renderAgreements()">
+          <option value="">All Partners</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Partner</th>
+              <th>Agreement Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Duration</th>
+              <th>Days Left</th>
+              <th>Auto-Renew</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="agreements-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ REFERRALS & LEADS ═══════════════════ -->
+  <div class="page" id="page-referrals">
+    <div class="topbar">
+      <div>
+        <span class="topbar-title">Referrals & Leads</span>
+        <span class="topbar-sub">Track partner-sourced opportunities through your pipeline</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="openModal('modal-add-lead')">＋ Log Lead</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="stats-row" id="lead-stats"></div>
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search leads…" id="lead-search" oninput="renderLeads()">
+        </div>
+        <select class="filter-select btn btn-secondary" id="lead-filter-stage" onchange="renderLeads()">
+          <option value="">All Stages</option>
+          <option>Referred</option>
+          <option>Contacted</option>
+          <option>Qualified</option>
+          <option>Proposal</option>
+          <option>Negotiation</option>
+          <option>Closed Won</option>
+          <option>Closed Lost</option>
+        </select>
+        <select class="filter-select btn btn-secondary" id="lead-filter-partner" onchange="renderLeads()">
+          <option value="">All Partners</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Contact</th>
+              <th>Referred By</th>
+              <th>Stage</th>
+              <th>Deal Value</th>
+              <th>Rev Share</th>
+              <th>Date Referred</th>
+              <th>Last Activity</th>
+              <th>HubSpot</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="leads-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ REV SHARE ═══════════════════ -->
+  <div class="page" id="page-revshare">
+    <div class="topbar">
+      <div>
+        <span class="topbar-title">Rev Share Reports</span>
+        <span class="topbar-sub">Commission calculations, payouts & reconciliation</span>
+      </div>
+      <div class="topbar-actions">
+        <select class="btn btn-secondary" id="rev-period" onchange="renderRevShare()">
+          <option value="current">Current Month</option>
+          <option value="last">Last Month</option>
+          <option value="q1">Q1</option>
+          <option value="q2">Q2</option>
+          <option value="q3">Q3</option>
+          <option value="q4">Q4</option>
+          <option value="ytd">Year to Date</option>
+        </select>
+        <button class="btn btn-secondary" onclick="exportRevShare()">↓ Export CSV</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="stats-row" id="rev-stats"></div>
+      <div class="dash-grid">
+        <div>
+          <div class="section-head">
+            <div><div class="section-title">Partner Commission Breakdown</div></div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Partner</th>
+                  <th>Closed Deals</th>
+                  <th>Total Deal Value</th>
+                  <th>Rev Share %</th>
+                  <th>Commission Owed</th>
+                  <th>Paid</th>
+                  <th>Outstanding</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="revshare-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="section-head"><div class="section-title">Top Earners</div></div>
+          <div class="widget">
+            <div id="rev-top-list"></div>
+          </div>
+          <div style="height:1rem"></div>
+          <div class="section-head"><div class="section-title">Revenue by Partner Type</div></div>
+          <div class="widget">
+            <div class="chart-wrap" style="height:140px"><canvas id="rev-donut"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ HUBSPOT ═══════════════════ -->
+  <div class="page" id="page-hubspot">
+    <div class="topbar">
+      <div>
+        <span class="topbar-title">HubSpot Sync</span>
+        <span class="topbar-sub">Manage CRM integration & deal attribution</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-secondary" onclick="simulateHubSpotSync()">↺ Simulate Sync</button>
+        <button class="btn btn-primary" onclick="openModal('modal-hs-connect')">⟐ Configure HubSpot</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <div id="hs-status-banner"></div>
+
+      <div class="dash-grid">
+        <div>
+          <div class="section-head">
+            <div class="section-title">Linked CRM Contacts & Deals</div>
+            <button class="btn btn-sm btn-secondary" onclick="renderHubspot()">Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Company / Lead</th>
+                  <th>Partner</th>
+                  <th>HubSpot Deal ID</th>
+                  <th>Stage</th>
+                  <th>Deal Value</th>
+                  <th>HubSpot Status</th>
+                  <th>Last Sync</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="hs-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="widget" style="margin-bottom:1rem">
+            <div class="widget-title">Sync Summary</div>
+            <div id="hs-summary"></div>
+          </div>
+          <div class="widget">
+            <div class="widget-title">Sync Log</div>
+            <div id="hs-log" style="max-height:260px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════ MODALS ═══════════ -->
+
+<!-- Add Partner -->
+<div class="modal-overlay" id="modal-add-partner">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Add New Partner</div>
+      <button class="modal-close" onclick="closeModal('modal-add-partner')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group span2">
+          <div class="form-section-label">Company Details</div>
+        </div>
+        <div class="form-group">
+          <label>Company Name *</label>
+          <input type="text" id="p-name" placeholder="Acme Corp">
+        </div>
+        <div class="form-group">
+          <label>Partner Type *</label>
+          <select id="p-type">
+            <option>Reseller</option>
+            <option>Referral</option>
+            <option>Technology</option>
+            <option>Agency</option>
+            <option>Affiliate</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Primary Contact Name</label>
+          <input type="text" id="p-contact" placeholder="Jane Smith">
+        </div>
+        <div class="form-group">
+          <label>Contact Email</label>
+          <input type="email" id="p-email" placeholder="jane@acme.com">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="p-phone" placeholder="+1 555 000 0000">
+        </div>
+        <div class="form-group">
+          <label>Website</label>
+          <input type="text" id="p-website" placeholder="acme.com">
+        </div>
+        <div class="form-group">
+          <label>Region / Territory</label>
+          <input type="text" id="p-region" placeholder="North America">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="p-status">
+            <option>Onboarding</option>
+            <option>Active</option>
+            <option>At Risk</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Default Rev Share %</label>
+          <input type="number" id="p-revshare" placeholder="20" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label>HubSpot Company ID (optional)</label>
+          <input type="text" id="p-hsid" placeholder="12345678">
+        </div>
+        <div class="form-group span2">
+          <label>Notes</label>
+          <textarea id="p-notes" placeholder="Any additional context about this partner…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-add-partner')">Cancel</button>
+      <button class="btn btn-primary" onclick="savePartner()">Save Partner</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Agreement -->
+<div class="modal-overlay" id="modal-add-agreement">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">New Partner Agreement</div>
+      <button class="modal-close" onclick="closeModal('modal-add-agreement')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Partner *</label>
+          <select id="agr-partner"></select>
+        </div>
+        <div class="form-group">
+          <label>Agreement Type *</label>
+          <select id="agr-type">
+            <option>Referral Agreement</option>
+            <option>Reseller Agreement</option>
+            <option>Technology Partnership</option>
+            <option>Agency Agreement</option>
+            <option>Affiliate Agreement</option>
+            <option>NDA</option>
+            <option>MSA</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Start Date *</label>
+          <input type="date" id="agr-start">
+        </div>
+        <div class="form-group">
+          <label>End Date *</label>
+          <input type="date" id="agr-end">
+        </div>
+        <div class="form-group">
+          <label>Rev Share % in Agreement</label>
+          <input type="number" id="agr-revpct" placeholder="20" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label>Auto-Renew</label>
+          <select id="agr-autorenew">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Renewal Notice (days before)</label>
+          <input type="number" id="agr-notice" placeholder="30" value="30">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="agr-status">
+            <option>Active</option>
+            <option>Draft</option>
+            <option>Pending Renewal</option>
+          </select>
+        </div>
+        <div class="form-group span2">
+          <label>Key Terms / Notes</label>
+          <textarea id="agr-notes" placeholder="Summarise key terms, obligations, exclusions…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-add-agreement')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAgreement()">Save Agreement</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Lead -->
+<div class="modal-overlay" id="modal-add-lead">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Log New Lead / Referral</div>
+      <button class="modal-close" onclick="closeModal('modal-add-lead')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Company Name *</label>
+          <input type="text" id="l-company" placeholder="Prospect Inc">
+        </div>
+        <div class="form-group">
+          <label>Contact Name</label>
+          <input type="text" id="l-contact" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label>Contact Email</label>
+          <input type="email" id="l-email" placeholder="john@prospect.com">
+        </div>
+        <div class="form-group">
+          <label>Referred By (Partner) *</label>
+          <select id="l-partner"></select>
+        </div>
+        <div class="form-group">
+          <label>Deal Value (£)</label>
+          <input type="number" id="l-value" placeholder="25000">
+        </div>
+        <div class="form-group">
+          <label>Rev Share % for This Deal</label>
+          <input type="number" id="l-revshare" placeholder="20" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label>Pipeline Stage</label>
+          <select id="l-stage">
+            <option>Referred</option>
+            <option>Contacted</option>
+            <option>Qualified</option>
+            <option>Proposal</option>
+            <option>Negotiation</option>
+            <option>Closed Won</option>
+            <option>Closed Lost</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date Referred</label>
+          <input type="date" id="l-date">
+        </div>
+        <div class="form-group">
+          <label>HubSpot Deal ID (optional)</label>
+          <input type="text" id="l-hsid" placeholder="deal_12345">
+        </div>
+        <div class="form-group">
+          <label>Expected Close Date</label>
+          <input type="date" id="l-close">
+        </div>
+        <div class="form-group span2">
+          <label>Notes</label>
+          <textarea id="l-notes" placeholder="Context, next steps, requirements…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-add-lead')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLead()">Save Lead</button>
+    </div>
+  </div>
+</div>
+
+<!-- Partner Detail -->
+<div class="modal-overlay" id="modal-partner-detail">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <div class="modal-title" id="detail-title">Partner Detail</div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <button class="btn btn-sm btn-secondary" id="detail-edit-btn">✏ Edit</button>
+        <button class="modal-close" onclick="closeModal('modal-partner-detail')">✕</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="switchTab('detail','overview')">Overview</button>
+        <button class="tab-btn" onclick="switchTab('detail','agreements')">Agreements</button>
+        <button class="tab-btn" onclick="switchTab('detail','leads')">Leads & Deals</button>
+        <button class="tab-btn" onclick="switchTab('detail','revshare')">Rev Share</button>
+        <button class="tab-btn" onclick="switchTab('detail','activity')">Activity Log</button>
+      </div>
+      <div id="detail-tab-overview" class="tab-panel active"></div>
+      <div id="detail-tab-agreements" class="tab-panel"></div>
+      <div id="detail-tab-leads" class="tab-panel"></div>
+      <div id="detail-tab-revshare" class="tab-panel"></div>
+      <div id="detail-tab-activity" class="tab-panel"></div>
+    </div>
+  </div>
+</div>
+
+<!-- HubSpot Config -->
+<div class="modal-overlay" id="modal-hs-connect">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Configure HubSpot Integration</div>
+      <button class="modal-close" onclick="closeModal('modal-hs-connect')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-warn"><span class="alert-icon">ℹ</span><div class="alert-text"><strong>Mock Mode</strong>This is a simulated integration. In production, you would enter your HubSpot Private App token to enable live syncing.</div></div>
+      <div class="form-grid single">
+        <div class="form-group">
+          <label>HubSpot Portal ID</label>
+          <input type="text" id="hs-portal" placeholder="1234567" value="8291047">
+        </div>
+        <div class="form-group">
+          <label>Private App Token</label>
+          <input type="password" id="hs-token" placeholder="pat-na1-••••••••" value="pat-na1-mock-token-xxxx">
+          <div class="input-hint">Generate from HubSpot → Settings → Private Apps</div>
+        </div>
+        <div class="form-group">
+          <label>Deal Stage Mapping — "Referred"</label>
+          <select id="hs-stage1"><option>appointmentscheduled</option><option selected>qualifiedtobuy</option><option>presentationscheduled</option></select>
+        </div>
+        <div class="form-group">
+          <label>Deal Stage Mapping — "Closed Won"</label>
+          <select id="hs-stage2"><option>closedwon</option></select>
+        </div>
+        <div class="form-group">
+          <label>Sync Frequency</label>
+          <select><option>Every 15 minutes</option><option selected>Every hour</option><option>Daily</option></select>
+        </div>
+        <div class="form-group">
+          <label>Auto-create HS Contact on Lead Log?</label>
+          <select><option>Yes</option><option>No</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-hs-connect')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveHsConfig()">Save & Test Connection</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Agreement -->
+<div class="modal-overlay" id="modal-edit-agreement">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Edit Agreement</div>
+      <button class="modal-close" onclick="closeModal('modal-edit-agreement')">✕</button>
+    </div>
+    <div class="modal-body" id="edit-agr-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" onclick="deleteAgreementCurrent()">Delete</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-secondary" onclick="closeModal('modal-edit-agreement')">Cancel</button>
+      <button class="btn btn-primary" onclick="updateAgreement()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Lead -->
+<div class="modal-overlay" id="modal-edit-lead">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Edit Lead</div>
+      <button class="modal-close" onclick="closeModal('modal-edit-lead')">✕</button>
+    </div>
+    <div class="modal-body" id="edit-lead-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" onclick="deleteLeadCurrent()">Delete</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-secondary" onclick="closeModal('modal-edit-lead')">Cancel</button>
+      <button class="btn btn-primary" onclick="updateLead()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA LAYER — localStorage persistence
+// ═══════════════════════════════════════════════════
+const DB = {
+  get(k){try{return JSON.parse(localStorage.getItem('ph_'+k)||'null')}catch{return null}},
+  set(k,v){localStorage.setItem('ph_'+k,JSON.stringify(v))},
+};
+
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+
+// Seed data if empty
+function seedData(){
+  if(DB.get('seeded')) return;
+
+  const partners=[
+    {id:'p1',name:'Apex Solutions',type:'Reseller',contact:'Sarah Mitchell',email:'sarah@apexsolutions.com',phone:'+44 20 7946 0001',website:'apexsolutions.com',region:'UK & Ireland',status:'Active',revshare:20,hsid:'hs_901',notes:'Strategic tier-1 reseller. Monthly check-ins.',color:'#d4500a',created:'2023-06-15'},
+    {id:'p2',name:'BlueBridge Agency',type:'Agency',contact:'Marcus Chen',email:'marcus@bluebridge.io',phone:'+1 415 555 0102',website:'bluebridge.io',region:'North America',status:'Active',revshare:15,hsid:'hs_902',notes:'Design & implementation agency. Strong in fintech.',color:'#1a5fa0',created:'2023-09-01'},
+    {id:'p3',name:'Nova Tech Partners',type:'Technology',contact:'Priya Sharma',email:'priya@novatech.co',phone:'+91 98 0000 1234',website:'novatech.co',region:'APAC',status:'Active',revshare:25,hsid:'',notes:'Tech integration partner. Joint product roadmap.',color:'#1a7a4a',created:'2024-01-10'},
+    {id:'p4',name:'Meridian Group',type:'Referral',contact:'Tom Bradley',email:'tom@meridiangroup.com',phone:'+44 161 496 0200',website:'meridiangroup.com',region:'EMEA',status:'At Risk',revshare:18,hsid:'hs_904',notes:'Activity declining since Q3. Need engagement.',color:'#b58a00',created:'2023-03-20'},
+    {id:'p5',name:'CloudFirst Ltd',type:'Reseller',contact:'Emma Watson',email:'emma@cloudfirst.co.uk',phone:'+44 20 7946 0500',website:'cloudfirst.co.uk',region:'UK',status:'Onboarding',revshare:22,hsid:'',notes:'New reseller, onboarding in progress.',color:'#7a3ab8',created:'2025-01-15'},
+    {id:'p6',name:'SyncSphere',type:'Affiliate',contact:'Jake Torres',email:'jake@syncsphere.com',phone:'+1 720 555 0199',website:'syncsphere.com',region:'North America',status:'Active',revshare:12,hsid:'hs_906',notes:'High volume affiliate, low touch.',color:'#c0392b',created:'2024-05-01'},
+  ];
+
+  const today=new Date(); const fmt=d=>d.toISOString().slice(0,10);
+  const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+
+  const agreements=[
+    {id:'a1',partnerId:'p1',type:'Reseller Agreement',start:'2023-06-15',end:fmt(addDays(today,12)),revpct:20,autorenew:'yes',notice:30,status:'Expiring Soon',notes:'Standard reseller terms. Volume tier pricing attached.'},
+    {id:'a2',partnerId:'p2',type:'Agency Agreement',start:'2023-09-01',end:fmt(addDays(today,65)),revpct:15,autorenew:'yes',notice:30,status:'Active',notes:'Agency commission on all referred clients in NA.'},
+    {id:'a3',partnerId:'p3',type:'Technology Partnership',start:'2024-01-10',end:fmt(addDays(today,180)),revpct:25,autorenew:'no',notice:60,status:'Active',notes:'Tech integration, joint GTM, co-marketing budget.'},
+    {id:'a4',partnerId:'p4',type:'Referral Agreement',start:'2023-03-20',end:fmt(addDays(today,-5)),revpct:18,autorenew:'no',notice:30,status:'Expired',notes:'Expired. Awaiting renewal discussion.'},
+    {id:'a5',partnerId:'p1',type:'NDA',start:'2023-06-01',end:fmt(addDays(today,300)),revpct:0,autorenew:'yes',notice:30,status:'Active',notes:'Mutual NDA covering all partnership activities.'},
+    {id:'a6',partnerId:'p5',type:'Reseller Agreement',start:'2025-01-15',end:fmt(addDays(today,360)),revpct:22,autorenew:'yes',notice:30,status:'Active',notes:'Draft terms pending legal sign-off.'},
+    {id:'a7',partnerId:'p6',type:'Affiliate Agreement',start:'2024-05-01',end:fmt(addDays(today,5)),revpct:12,autorenew:'yes',notice:14,status:'Expiring Soon',notes:'Affiliate tracking via UTM codes.'},
+  ];
+
+  const leads=[
+    {id:'l1',company:'TechFlow Ltd',contact:'Oliver Hart',email:'o.hart@techflow.com',partnerId:'p1',value:48000,revshare:20,stage:'Closed Won',dateReferred:'2024-10-15',lastActivity:fmt(addDays(today,-3)),closeDate:'2024-12-01',hsid:'deal_88201',notes:'Annual SaaS contract. Intro by Sarah at Apex.'},
+    {id:'l2',company:'Quantex Analytics',contact:'Nina Patel',email:'nina@quantex.io',partnerId:'p2',value:75000,revshare:15,stage:'Negotiation',dateReferred:'2025-01-08',lastActivity:fmt(addDays(today,-1)),closeDate:fmt(addDays(today,14)),hsid:'deal_88345',notes:'Enterprise deal, legal reviewing MSA.'},
+    {id:'l3',company:'GreenLeaf Corp',contact:'Sam Okafor',email:'s.okafor@greenleaf.co',partnerId:'p1',value:22000,revshare:20,stage:'Proposal',dateReferred:'2025-01-20',lastActivity:fmt(addDays(today,-7)),closeDate:fmt(addDays(today,30)),hsid:'',notes:'SMB prospect. Sent proposal v2.'},
+    {id:'l4',company:'Momentum SaaS',contact:'Clara Webb',email:'clara@momentumsaas.com',partnerId:'p3',value:120000,revshare:25,stage:'Qualified',dateReferred:'2025-02-01',lastActivity:fmt(addDays(today,-2)),closeDate:fmt(addDays(today,45)),hsid:'deal_88412',notes:'Big opportunity. Demo scheduled.'},
+    {id:'l5',company:'Crestview Media',contact:'Josh Franklin',email:'josh@crestview.media',partnerId:'p6',value:9500,revshare:12,stage:'Contacted',dateReferred:'2025-02-10',lastActivity:fmt(today),closeDate:'',hsid:'',notes:'Affiliate referral, intro call booked.'},
+    {id:'l6',company:'Pinnacle Logistics',contact:'Anita Rao',email:'anita@pinnacle-log.com',partnerId:'p4',value:55000,revshare:18,stage:'Closed Lost',dateReferred:'2024-11-05',lastActivity:'2025-01-10',closeDate:'2025-01-10',hsid:'deal_87900',notes:'Lost to competitor on price.'},
+    {id:'l7',company:'NorthStar Retail',contact:'Ben Clarke',email:'ben@northstarretail.com',partnerId:'p2',value:38000,revshare:15,stage:'Referred',dateReferred:fmt(addDays(today,-2)),lastActivity:fmt(today),closeDate:'',hsid:'',notes:'Just came in. Follow up assigned.'},
+    {id:'l8',company:'DataPulse Inc',contact:'Mei Lin',email:'mei@datapulse.com',partnerId:'p1',value:62000,revshare:20,stage:'Closed Won',dateReferred:'2024-09-10',lastActivity:'2024-11-20',closeDate:'2024-11-20',hsid:'deal_87500',notes:'Second closed deal from Apex this year.'},
+  ];
+
+  const hsLog=[
+    {time:fmt(today)+' 09:15',action:'Sync completed',detail:'8 deals updated, 2 contacts created',type:'success'},
+    {time:fmt(addDays(today,-1))+' 14:30',action:'Deal stage updated',detail:'Quantex Analytics → Negotiation in HubSpot',type:'success'},
+    {time:fmt(addDays(today,-1))+' 14:30',action:'New contact created',detail:'Ben Clarke (NorthStar Retail) added to HS',type:'success'},
+    {time:fmt(addDays(today,-3))+' 08:00',action:'Sync error',detail:'Rate limit hit. Retried after 60s.',type:'error'},
+    {time:fmt(addDays(today,-3))+' 08:01',action:'Sync completed',detail:'Retry successful. 5 records updated.',type:'success'},
+    {time:fmt(addDays(today,-7))+' 09:00',action:'Sync completed',detail:'12 deals updated, 1 contact updated',type:'success'},
+  ];
+
+  DB.set('partners',partners);
+  DB.set('agreements',agreements);
+  DB.set('leads',leads);
+  DB.set('hslog',hsLog);
+  DB.set('seeded',true);
+}
+
+function getPartners(){return DB.get('partners')||[]}
+function getAgreements(){return DB.get('agreements')||[]}
+function getLeads(){return DB.get('leads')||[]}
+function getHsLog(){return DB.get('hslog')||[]}
+function getPartnerById(id){return getPartners().find(p=>p.id===id)}
+
+// ═══════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════
+const fmt=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'-';
+const fmtNum=n=>n===undefined||n===null?'—':Number(n).toLocaleString('en-GB');
+const fmtCcy=n=>n===undefined||n===null?'—':'£'+Number(n).toLocaleString('en-GB',{minimumFractionDigits:0});
+
+function daysUntil(dateStr){
+  if(!dateStr) return null;
+  const diff=new Date(dateStr)-new Date();
+  return Math.ceil(diff/(1000*60*60*24));
+}
+
+function agreementStatus(agr){
+  const days=daysUntil(agr.end);
+  if(days===null) return agr.status||'Unknown';
+  if(days<0) return 'Expired';
+  if(days<=30) return 'Expiring Soon';
+  if(agr.status==='Pending Renewal') return 'Pending Renewal';
+  if(agr.status==='Draft') return 'Draft';
+  return 'Active';
+}
+
+function statusBadge(s){
+  const map={
+    'Active':'badge-green','At Risk':'badge-yellow','Inactive':'badge-grey',
+    'Onboarding':'badge-blue','Expiring Soon':'badge-yellow','Expired':'badge-red',
+    'Pending Renewal':'badge-yellow','Draft':'badge-grey',
+    'Referred':'badge-blue','Contacted':'badge-blue','Qualified':'badge-blue',
+    'Proposal':'badge-yellow','Negotiation':'badge-yellow',
+    'Closed Won':'badge-green','Closed Lost':'badge-red',
+  };
+  return `<span class="badge ${map[s]||'badge-grey'}"><span class="badge-dot"></span>${s}</span>`;
+}
+
+function avatarColor(name){
+  const colors=['#d4500a','#1a5fa0','#1a7a4a','#b58a00','#7a3ab8','#c0392b','#16a085','#8e44ad'];
+  let h=0; for(let c of name) h=(h*31+c.charCodeAt(0))&0xfffffff;
+  return colors[h%colors.length];
+}
+
+function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+
+function durationLabel(start,end){
+  if(!start||!end) return '-';
+  const ms=new Date(end)-new Date(start);
+  const days=Math.round(ms/(1000*60*60*24));
+  if(days>=365) return Math.round(days/365)+'y';
+  if(days>=30) return Math.round(days/30)+'mo';
+  return days+'d';
+}
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+let currentPage='dashboard';
+let currentEditId=null;
+
+function navigate(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelector(`[data-page="${page}"]`).classList.add('active');
+  currentPage=page;
+  const renders={
+    dashboard:renderDashboard,
+    partners:renderPartners,
+    agreements:renderAgreements,
+    referrals:renderLeads,
+    revshare:renderRevShare,
+    hubspot:renderHubspot,
+  };
+  if(renders[page]) renders[page]();
+}
+
+document.querySelectorAll('.nav-item').forEach(el=>{
+  el.addEventListener('click',()=>navigate(el.dataset.page));
+});
+
+// ═══════════════════════════════════════════════════
+// MODAL SYSTEM
+// ═══════════════════════════════════════════════════
+function openModal(id){
+  if(id==='modal-add-agreement'||id==='modal-add-lead') populatePartnerSelects();
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); });
+});
+
+function populatePartnerSelects(){
+  const partners=getPartners();
+  ['agr-partner','l-partner'].forEach(id=>{
+    const sel=document.getElementById(id);
+    if(!sel) return;
+    sel.innerHTML=partners.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════
+function toast(msg,type=''){
+  const d=document.getElementById('toast');
+  const el=document.createElement('div');
+  el.className=`toast-item ${type}`;
+  el.innerHTML=`${type==='success'?'✓':type==='error'?'✕':'ℹ'} ${msg}`;
+  d.appendChild(el);
+  setTimeout(()=>el.remove(),3500);
+}
+
+// ═══════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════
+function switchTab(group,tab){
+  document.querySelectorAll(`[id^="detail-tab-"]`).forEach(p=>p.classList.remove('active'));
+  document.getElementById(`detail-tab-${tab}`).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function setView(page,mode){
+  document.getElementById('view-card-btn').className='btn btn-secondary'+(mode==='card'?' btn-primary':'');
+  document.getElementById('view-table-btn').className='btn btn-secondary'+(mode==='table'?' btn-primary':'');
+  DB.set('partners-view-mode',mode);
+  renderPartners();
+}
+
+// ═══════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════
+function renderDashboard(){
+  document.getElementById('dash-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  const partners=getPartners();
+  const agreements=getAgreements();
+  const leads=getLeads();
+
+  const activePartners=partners.filter(p=>p.status==='Active').length;
+  const expiring=agreements.filter(a=>agreementStatus(a)==='Expiring Soon').length;
+  const openLeads=leads.filter(l=>!['Closed Won','Closed Lost'].includes(l.stage)).length;
+  const totalRev=leads.filter(l=>l.stage==='Closed Won').reduce((s,l)=>s+(Number(l.value)||0),0);
+
+  document.getElementById('dash-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Active Partners</div><div class="stat-value">${activePartners}</div><div class="stat-delta delta-up">↑ ${partners.length} total partners</div></div>
+    <div class="stat-card"><div class="stat-label">Partner Revenue</div><div class="stat-value">${fmtCcy(totalRev)}</div><div class="stat-delta delta-up">↑ Closed Won deals</div></div>
+    <div class="stat-card"><div class="stat-label">Open Leads</div><div class="stat-value">${openLeads}</div><div class="stat-delta delta-up">${leads.filter(l=>l.stage==='Closed Won').length} closed won</div></div>
+    <div class="stat-card"><div class="stat-label">Expiring Agreements</div><div class="stat-value">${expiring}</div><div class="stat-delta ${expiring>0?'delta-warn':'delta-up'}">${expiring>0?'⚠ Needs attention':'✓ All clear'}</div></div>
+  `;
+
+  // Update badges
+  document.getElementById('expiring-badge').textContent=expiring;
+  document.getElementById('expiring-badge').style.display=expiring>0?'':'none';
+  const activeLeads=leads.filter(l=>['Referred','Contacted','Qualified'].includes(l.stage)).length;
+  document.getElementById('leads-badge').textContent=activeLeads;
+  document.getElementById('leads-badge').style.display=activeLeads>0?'':'none';
+
+  // Expiry widget
+  const expiringList=agreements
+    .map(a=>({...a,days:daysUntil(a.end)}))
+    .filter(a=>a.days!==null&&a.days<=60&&a.days>=0)
+    .sort((a,b)=>a.days-b.days)
+    .slice(0,6);
+
+  document.getElementById('dash-expiry-list').innerHTML=expiringList.length?
+    expiringList.map(a=>{
+      const p=getPartnerById(a.partnerId);
+      const cls=a.days<=14?'delta-down':a.days<=30?'delta-warn':'delta-up';
+      return `<div class="expiry-row" onclick="navigate('agreements')">
+        <div class="expiry-days ${cls}">${a.days}d</div>
+        <div><div class="expiry-name">${p?p.name:a.partnerId}</div><div class="expiry-date">${a.type}</div></div>
+        <div class="expiry-date">${fmt(a.end)}</div>
+      </div>`;
+    }).join(''):
+    '<div class="empty-state" style="padding:1.5rem"><div style="font-size:1.5rem">✓</div><div>No agreements expiring soon</div></div>';
+
+  // Pipeline widget
+  const stages=['Referred','Contacted','Qualified','Proposal','Negotiation'];
+  document.getElementById('dash-pipeline').innerHTML=stages.map(s=>{
+    const count=leads.filter(l=>l.stage===s).length;
+    const val=leads.filter(l=>l.stage===s).reduce((t,l)=>t+(Number(l.value)||0),0);
+    return `<div style="display:flex;align-items:center;gap:.6rem;padding:.4rem 0;border-bottom:1px solid var(--border)">
+      <div style="width:80px;font-size:.75rem;color:var(--text3)">${s}</div>
+      <div style="flex:1;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden"><div style="height:100%;background:var(--accent);border-radius:3px;width:${Math.min(count*20,100)}%"></div></div>
+      <div style="font-size:.75rem;font-weight:700;min-width:16px">${count}</div>
+      <div style="font-size:.72rem;color:var(--text3);min-width:60px;text-align:right">${fmtCcy(val)}</div>
+    </div>`;
+  }).join('');
+
+  // Top partners
+  const partnerRevMap={};
+  leads.filter(l=>l.stage==='Closed Won').forEach(l=>{
+    partnerRevMap[l.partnerId]=(partnerRevMap[l.partnerId]||0)+(Number(l.value)||0);
+  });
+  const topPartners=Object.entries(partnerRevMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxRev=topPartners[0]?topPartners[0][1]:1;
+  document.getElementById('dash-top-partners').innerHTML=topPartners.length?
+    topPartners.map(([pid,rev])=>{
+      const p=getPartnerById(pid);
+      if(!p) return '';
+      return `<div class="rev-partner-row">
+        <div style="width:28px;height:28px;border-radius:7px;background:${p.color||avatarColor(p.name)};display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0">${initials(p.name)}</div>
+        <div style="flex:1;min-width:0"><div style="font-size:.78rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+        <div class="rev-bar-wrap" style="margin-top:3px"><div class="rev-bar" style="width:${(rev/maxRev*100).toFixed(0)}%"></div></div></div>
+        <div style="font-size:.75rem;font-weight:700;flex-shrink:0">${fmtCcy(rev)}</div>
+      </div>`;
+    }).join(''):'<div style="color:var(--text3);font-size:.82rem;text-align:center;padding:1rem">No closed deals yet</div>';
+
+  // Integrations widget
+  const integrated=partners.filter(p=>p.hsid).length;
+  document.getElementById('dash-integrations').innerHTML=`
+    <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:1.3rem">🔗</span>
+      <div style="flex:1"><div style="font-size:.82rem;font-weight:600">HubSpot CRM</div><div style="font-size:.72rem;color:var(--text3)">${integrated} of ${partners.length} partners linked</div></div>
+      <span class="badge badge-green">Connected</span>
+    </div>
+    <div style="margin-top:.75rem">
+      <div style="font-size:.72rem;color:var(--text3);margin-bottom:.4rem">Partners with HS ID</div>
+      <div class="progress-wrap" style="height:8px"><div class="progress-bar" style="width:${partners.length?Math.round(integrated/partners.length*100):0}%"></div></div>
+      <div style="font-size:.72rem;color:var(--text3);margin-top:.25rem">${integrated} / ${partners.length}</div>
+    </div>
+    <div style="margin-top:.75rem;font-size:.75rem;color:var(--text3)">Last sync: ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</div>
+  `;
+
+  // Revenue chart (mock months)
+  drawRevenueChart();
+}
+
+function drawRevenueChart(){
+  const ctx=document.getElementById('rev-chart');
+  if(!ctx) return;
+  if(ctx._chart) ctx._chart.destroy();
+  const leads=getLeads().filter(l=>l.stage==='Closed Won');
+  const months=['Sep','Oct','Nov','Dec','Jan','Feb'];
+  const now=new Date();
+  const data=months.map((_,i)=>{
+    const mo=new Date(now.getFullYear(),now.getMonth()-5+i,1);
+    return leads.filter(l=>{
+      const d=new Date(l.closeDate||l.dateReferred);
+      return d.getFullYear()===mo.getFullYear()&&d.getMonth()===mo.getMonth();
+    }).reduce((s,l)=>s+(Number(l.value)||0),0)||[22000,35000,41000,48000,62000,75000][i];
+  });
+  drawBarChart(ctx,months,data,'#d4500a');
+  ctx._chart=true;
+}
+
+function drawBarChart(canvas,labels,data,color){
+  const ctx=canvas.getContext('2d');
+  const W=canvas.parentElement.offsetWidth;
+  const H=180;
+  canvas.width=W*devicePixelRatio;
+  canvas.height=H*devicePixelRatio;
+  canvas.style.width=W+'px';
+  canvas.style.height=H+'px';
+  ctx.scale(devicePixelRatio,devicePixelRatio);
+  ctx.clearRect(0,0,W,H);
+  const pad={top:20,right:10,bottom:30,left:50};
+  const max=Math.max(...data)*1.15||1;
+  const bw=(W-pad.left-pad.right)/labels.length;
+  ctx.fillStyle='#9b9790';
+  ctx.font='500 10px Outfit';
+  data.forEach((v,i)=>{
+    const x=pad.left+i*bw;
+    const bh=((v/max)*(H-pad.top-pad.bottom));
+    const y=H-pad.bottom-bh;
+    const grd=ctx.createLinearGradient(0,y,0,H-pad.bottom);
+    grd.addColorStop(0,color);grd.addColorStop(1,color+'33');
+    ctx.fillStyle=grd;
+    ctx.beginPath();ctx.roundRect(x+6,y,bw-12,bh,4);ctx.fill();
+    ctx.fillStyle='#9b9790';
+    ctx.textAlign='center';
+    ctx.fillText(labels[i],x+bw/2,H-8);
+  });
+  // Y axis labels
+  [0,.25,.5,.75,1].forEach(t=>{
+    const y=H-pad.bottom-(t*(H-pad.top-pad.bottom));
+    ctx.fillStyle='#d4d0c8';ctx.fillRect(pad.left,y,W-pad.left-pad.right,1);
+    ctx.fillStyle='#9b9790';ctx.textAlign='right';
+    ctx.fillText('£'+(max*t/1000).toFixed(0)+'k',pad.left-4,y+4);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// PARTNERS
+// ═══════════════════════════════════════════════════
+function renderPartners(){
+  const partners=getPartners();
+  const q=(document.getElementById('partner-search')||{}).value?.toLowerCase()||'';
+  const type=(document.getElementById('partner-filter-type')||{}).value||'';
+  const status=(document.getElementById('partner-filter-status')||{}).value||'';
+
+  let filtered=partners.filter(p=>{
+    if(q&&!p.name.toLowerCase().includes(q)&&!p.contact?.toLowerCase().includes(q)) return false;
+    if(type&&p.type!==type) return false;
+    if(status&&p.status!==status) return false;
+    return true;
+  });
+
+  document.getElementById('partners-count').textContent=`${filtered.length} of ${partners.length} partners`;
+
+  const mode=DB.get('partners-view-mode')||'card';
+  const container=document.getElementById('partners-view');
+
+  if(!filtered.length){
+    container.innerHTML=`<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-title">No partners found</div><div class="empty-sub">Adjust your filters or add a new partner.</div></div>`;
+    return;
+  }
+
+  if(mode==='card'){
+    const agreements=getAgreements();
+    const leads=getLeads();
+    container.innerHTML=`<div class="cards-grid">${filtered.map(p=>{
+      const agrs=agreements.filter(a=>a.partnerId===p.id);
+      const nextExpiry=agrs.map(a=>daysUntil(a.end)).filter(d=>d!==null&&d>=0).sort((a,b)=>a-b)[0];
+      const closedRev=leads.filter(l=>l.partnerId===p.id&&l.stage==='Closed Won').reduce((s,l)=>s+(Number(l.value)||0),0);
+      const openCount=leads.filter(l=>l.partnerId===p.id&&!['Closed Won','Closed Lost'].includes(l.stage)).length;
+      const col=p.color||avatarColor(p.name);
+      return `<div class="partner-card" onclick="openPartnerDetail('${p.id}')">
+        <div class="card-header">
+          <div style="display:flex;align-items:center;gap:.75rem;flex:1">
+            <div class="card-avatar" style="background:${col}">${initials(p.name)}</div>
+            <div class="card-meta">
+              <div class="card-name">${p.name}</div>
+              <div class="card-type">${p.type} · ${p.region||'—'}</div>
+            </div>
+          </div>
+          ${statusBadge(p.status)}
+        </div>
+        <div style="font-size:.78rem;color:var(--text3);display:flex;align-items:center;gap:.4rem">
+          <span>👤 ${p.contact||'—'}</span>
+          ${p.hsid?`<span style="margin-left:auto" class="hs-badge hs-synced">🔗 HS</span>`:''}
+        </div>
+        <div class="card-stats">
+          <div><div class="card-stat-label">Rev Share</div><div class="card-stat-value">${p.revshare||0}%</div></div>
+          <div><div class="card-stat-label">Closed Rev</div><div class="card-stat-value" style="font-size:.78rem">${fmtCcy(closedRev)}</div></div>
+          <div><div class="card-stat-label">Open Leads</div><div class="card-stat-value">${openCount}</div></div>
+        </div>
+        ${nextExpiry!==undefined?`<div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border);font-size:.73rem;color:${nextExpiry<=30?'var(--red)':'var(--text3)'}">
+          ${nextExpiry<=30?'⚠':'◷'} Agreement expires in ${nextExpiry} days
+        </div>`:''}
+      </div>`;
+    }).join('')}</div>`;
+  } else {
+    const leads=getLeads();
+    container.innerHTML=`<div class="table-wrap"><table class="data-table">
+      <thead><tr><th>Partner</th><th>Type</th><th>Contact</th><th>Region</th><th>Status</th><th>Rev Share</th><th>Closed Rev</th><th>Open Leads</th><th>HubSpot</th><th>Actions</th></tr></thead>
+      <tbody>${filtered.map(p=>{
+        const closedRev=leads.filter(l=>l.partnerId===p.id&&l.stage==='Closed Won').reduce((s,l)=>s+(Number(l.value)||0),0);
+        const openCount=leads.filter(l=>l.partnerId===p.id&&!['Closed Won','Closed Lost'].includes(l.stage)).length;
+        const col=p.color||avatarColor(p.name);
+        return `<tr>
+          <td><div style="display:flex;align-items:center;gap:.6rem">
+            <div style="width:28px;height:28px;border-radius:7px;background:${col};display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0">${initials(p.name)}</div>
+            <div><div style="font-weight:600;font-size:.82rem">${p.name}</div><div style="font-size:.7rem;color:var(--text3)">${p.email||''}</div></div>
+          </div></td>
+          <td><span class="tag">${p.type}</span></td>
+          <td style="font-size:.8rem">${p.contact||'—'}</td>
+          <td style="font-size:.8rem;color:var(--text3)">${p.region||'—'}</td>
+          <td>${statusBadge(p.status)}</td>
+          <td class="mono">${p.revshare||0}%</td>
+          <td class="mono">${fmtCcy(closedRev)}</td>
+          <td style="text-align:center">${openCount}</td>
+          <td>${p.hsid?`<span class="hs-badge hs-synced">🔗 ${p.hsid}</span>`:`<span class="hs-badge hs-not-synced">Not linked</span>`}</td>
+          <td><button class="btn btn-sm btn-ghost" onclick="openPartnerDetail('${p.id}')">View</button></td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+  }
+}
+
+function savePartner(){
+  const name=document.getElementById('p-name').value.trim();
+  if(!name){toast('Company name is required','error');return;}
+  const partners=getPartners();
+  const editId=document.getElementById('modal-add-partner').dataset.editId;
+  const newP={
+    id:editId||genId(),
+    name,type:document.getElementById('p-type').value,
+    contact:document.getElementById('p-contact').value,
+    email:document.getElementById('p-email').value,
+    phone:document.getElementById('p-phone').value,
+    website:document.getElementById('p-website').value,
+    region:document.getElementById('p-region').value,
+    status:document.getElementById('p-status').value,
+    revshare:Number(document.getElementById('p-revshare').value)||0,
+    hsid:document.getElementById('p-hsid').value,
+    notes:document.getElementById('p-notes').value,
+    color:avatarColor(name),
+    created:new Date().toISOString().slice(0,10),
+  };
+  if(editId){
+    const idx=partners.findIndex(p=>p.id===editId);
+    if(idx>=0) partners[idx]={...partners[idx],...newP};
+    delete document.getElementById('modal-add-partner').dataset.editId;
+  } else {
+    partners.push(newP);
+  }
+  DB.set('partners',partners);
+  closeModal('modal-add-partner');
+  ['p-name','p-contact','p-email','p-phone','p-website','p-region','p-revshare','p-hsid','p-notes'].forEach(id=>document.getElementById(id).value='');
+  toast(editId?'Partner updated':'Partner added','success');
+  renderPartners();
+  renderDashboard();
+}
+
+function openPartnerDetail(id){
+  const p=getPartnerById(id);
+  if(!p) return;
+  document.getElementById('detail-title').textContent=p.name;
+  document.getElementById('detail-edit-btn').onclick=()=>{closeModal('modal-partner-detail');editPartner(id)};
+  const col=p.color||avatarColor(p.name);
+
+  // Overview tab
+  const agreements=getAgreements().filter(a=>a.partnerId===id);
+  const leads=getLeads().filter(l=>l.partnerId===id);
+  const closedRev=leads.filter(l=>l.stage==='Closed Won').reduce((s,l)=>s+(Number(l.value)||0),0);
+  const nextAgr=agreements.map(a=>({...a,days:daysUntil(a.end)})).filter(a=>a.days!==null&&a.days>=0).sort((a,b)=>a.days-b.days)[0];
+
+  document.getElementById('detail-tab-overview').innerHTML=`
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;padding:.75rem;background:var(--bg);border-radius:10px">
+      <div style="width:52px;height:52px;border-radius:12px;background:${col};display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:#fff;flex-shrink:0">${initials(p.name)}</div>
+      <div style="flex:1">
+        <div style="font-size:1rem;font-weight:700">${p.name}</div>
+        <div style="font-size:.78rem;color:var(--text3);margin-top:.1rem">${p.type} · ${p.region||'—'}</div>
+      </div>
+      ${statusBadge(p.status)}
+      ${p.hsid?`<span class="hs-badge hs-synced">🔗 HubSpot</span>`:''}
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item"><div class="detail-label">Primary Contact</div><div class="detail-value">${p.contact||'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">Email</div><div class="detail-value"><a href="mailto:${p.email}" style="color:var(--accent)">${p.email||'—'}</a></div></div>
+      <div class="detail-item"><div class="detail-label">Phone</div><div class="detail-value">${p.phone||'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">Website</div><div class="detail-value">${p.website?`<a href="https://${p.website}" target="_blank" style="color:var(--accent)">${p.website}</a>`:'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">Default Rev Share</div><div class="detail-value">${p.revshare||0}%</div></div>
+      <div class="detail-item"><div class="detail-label">Partner Since</div><div class="detail-value">${fmt(p.created)}</div></div>
+      <div class="detail-item"><div class="detail-label">HubSpot ID</div><div class="detail-value">${p.hsid||'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">Total Closed Revenue</div><div class="detail-value" style="font-weight:700;color:var(--green)">${fmtCcy(closedRev)}</div></div>
+    </div>
+    ${nextAgr?`<div class="alert alert-${nextAgr.days<=14?'danger':nextAgr.days<=30?'warn':'success'}"><span class="alert-icon">${nextAgr.days<=30?'⚠':'◷'}</span><div class="alert-text"><strong>Agreement ${nextAgr.days<=30?'expiring soon':'active'}</strong>${nextAgr.type} expires ${fmt(nextAgr.end)} (${nextAgr.days} days)</div></div>`:''}
+    ${p.notes?`<div style="background:var(--bg);border-radius:8px;padding:.75rem;font-size:.82rem;color:var(--text2)"><strong>Notes:</strong> ${p.notes}</div>`:''}
+  `;
+
+  // Agreements tab
+  document.getElementById('detail-tab-agreements').innerHTML=agreements.length?`
+    <table class="data-table" style="margin-top:.5rem">
+      <thead><tr><th>Type</th><th>Start</th><th>End</th><th>Days Left</th><th>Auto-Renew</th><th>Status</th></tr></thead>
+      <tbody>${agreements.map(a=>{
+        const days=daysUntil(a.end);const st=agreementStatus(a);
+        return `<tr><td><strong>${a.type}</strong><br><small style="color:var(--text3)">${a.revpct>0?a.revpct+'% rev share':''}</small></td>
+        <td class="mono">${fmt(a.start)}</td><td class="mono">${fmt(a.end)}</td>
+        <td class="mono" style="color:${days!==null&&days<30?'var(--red)':'var(--text)'}">${days!==null?days+'d':'—'}</td>
+        <td>${a.autorenew==='yes'?'<span class="badge badge-green">Yes</span>':'<span class="badge badge-grey">No</span>'}</td>
+        <td>${statusBadge(st)}</td></tr>`;
+      }).join('')}</tbody>
+    </table>`:`<div class="empty-state"><div class="empty-icon">◻</div><div class="empty-title">No agreements yet</div></div>`;
+
+  // Leads tab
+  document.getElementById('detail-tab-leads').innerHTML=leads.length?`
+    <table class="data-table">
+      <thead><tr><th>Company</th><th>Contact</th><th>Stage</th><th>Value</th><th>Date Referred</th></tr></thead>
+      <tbody>${leads.map(l=>`<tr>
+        <td><strong>${l.company}</strong></td>
+        <td>${l.contact||'—'}</td>
+        <td>${statusBadge(l.stage)}</td>
+        <td class="mono">${fmtCcy(l.value)}</td>
+        <td class="mono">${fmt(l.dateReferred)}</td>
+      </tr>`).join('')}</tbody>
+    </table>`:`<div class="empty-state"><div class="empty-icon">⟳</div><div class="empty-title">No leads yet</div></div>`;
+
+  // Rev share tab
+  const won=leads.filter(l=>l.stage==='Closed Won');
+  const totalComm=won.reduce((s,l)=>s+((Number(l.value)||0)*(Number(l.revshare)||0)/100),0);
+  document.getElementById('detail-tab-revshare').innerHTML=`
+    <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:1rem">
+      <div class="stat-card"><div class="stat-label">Closed Deals</div><div class="stat-value">${won.length}</div></div>
+      <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value" style="font-size:1.3rem">${fmtCcy(closedRev)}</div></div>
+      <div class="stat-card"><div class="stat-label">Commission Owed</div><div class="stat-value" style="font-size:1.3rem;color:var(--accent)">${fmtCcy(totalComm)}</div></div>
+    </div>
+    ${won.length?`<table class="data-table"><thead><tr><th>Deal</th><th>Value</th><th>Rev Share %</th><th>Commission</th></tr></thead>
+    <tbody>${won.map(l=>`<tr><td>${l.company}</td><td class="mono">${fmtCcy(l.value)}</td><td class="mono">${l.revshare}%</td><td class="mono" style="color:var(--accent)">${fmtCcy((l.value*l.revshare/100))}</td></tr>`).join('')}</tbody></table>`:'<div class="empty-state"><div>No closed deals yet</div></div>'}
+  `;
+
+  // Activity log
+  document.getElementById('detail-tab-activity').innerHTML=`
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot green"></div><div class="tl-date">${fmt(p.created)}</div><div class="tl-text">Partner added to PartnerHub</div></div>
+      ${agreements.map(a=>`<div class="tl-item"><div class="tl-dot"></div><div class="tl-date">${fmt(a.start)}</div><div class="tl-text">${a.type} signed</div><div class="tl-sub">Expires ${fmt(a.end)}</div></div>`).join('')}
+      ${leads.sort((a,b)=>new Date(b.dateReferred)-new Date(a.dateReferred)).slice(0,8).map(l=>`<div class="tl-item"><div class="tl-dot ${l.stage==='Closed Won'?'green':l.stage==='Closed Lost'?'grey':''}"></div><div class="tl-date">${fmt(l.dateReferred)}</div><div class="tl-text">${l.company} referred</div><div class="tl-sub">${l.stage} · ${fmtCcy(l.value)}</div></div>`).join('')}
+    </div>`;
+
+  openModal('modal-partner-detail');
+}
+
+function editPartner(id){
+  const p=getPartnerById(id);
+  if(!p) return;
+  document.getElementById('p-name').value=p.name;
+  document.getElementById('p-type').value=p.type;
+  document.getElementById('p-contact').value=p.contact||'';
+  document.getElementById('p-email').value=p.email||'';
+  document.getElementById('p-phone').value=p.phone||'';
+  document.getElementById('p-website').value=p.website||'';
+  document.getElementById('p-region').value=p.region||'';
+  document.getElementById('p-status').value=p.status;
+  document.getElementById('p-revshare').value=p.revshare||'';
+  document.getElementById('p-hsid').value=p.hsid||'';
+  document.getElementById('p-notes').value=p.notes||'';
+  document.getElementById('modal-add-partner').dataset.editId=id;
+  document.querySelector('#modal-add-partner .modal-title').textContent='Edit Partner';
+  openModal('modal-add-partner');
+}
+
+// ═══════════════════════════════════════════════════
+// AGREEMENTS
+// ═══════════════════════════════════════════════════
+function renderAgreements(){
+  const agreements=getAgreements();
+  const q=(document.getElementById('agr-search')||{}).value?.toLowerCase()||'';
+  const sf=(document.getElementById('agr-filter-status')||{}).value||'';
+  const pf=(document.getElementById('agr-filter-partner')||{}).value||'';
+
+  // populate partner filter
+  const sel=document.getElementById('agr-filter-partner');
+  if(sel.options.length<=1){
+    getPartners().forEach(p=>{
+      const o=document.createElement('option');
+      o.value=p.id;o.textContent=p.name;
+      sel.appendChild(o);
+    });
+  }
+
+  const expiring=agreements.filter(a=>{const s=agreementStatus(a);return s==='Expiring Soon';});
+  const expired=agreements.filter(a=>agreementStatus(a)==='Expired');
+
+  let alertHtml='';
+  if(expired.length) alertHtml+=`<div class="alert alert-danger"><span class="alert-icon">✕</span><div class="alert-text"><strong>${expired.length} agreement${expired.length>1?'s':''} expired</strong>These need immediate attention — contact partners to renew.</div></div>`;
+  if(expiring.length) alertHtml+=`<div class="alert alert-warn"><span class="alert-icon">⚠</span><div class="alert-text"><strong>${expiring.length} agreement${expiring.length>1?'s':''} expiring within 30 days</strong>Review and initiate renewal conversations.</div></div>`;
+  document.getElementById('agreements-alerts').innerHTML=alertHtml;
+
+  let filtered=agreements.filter(a=>{
+    const p=getPartnerById(a.partnerId);
+    const st=agreementStatus(a);
+    if(q&&!a.type.toLowerCase().includes(q)&&!p?.name.toLowerCase().includes(q)) return false;
+    if(sf&&st!==sf) return false;
+    if(pf&&a.partnerId!==pf) return false;
+    return true;
+  }).sort((a,b)=>{
+    const da=daysUntil(a.end)??9999, db=daysUntil(b.end)??9999;
+    return da-db;
+  });
+
+  const tbody=document.getElementById('agreements-tbody');
+  if(!filtered.length){
+    tbody.innerHTML=`<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">◻</div><div class="empty-title">No agreements found</div></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML=filtered.map(a=>{
+    const p=getPartnerById(a.partnerId);
+    const days=daysUntil(a.end);
+    const dur=durationLabel(a.start,a.end);
+    const st=agreementStatus(a);
+    const prog=days!==null&&days>=0?Math.min(100,Math.max(0,Math.round(days/365*100))):0;
+    const col=p?.color||avatarColor(p?.name||'');
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:.6rem">
+        <div style="width:24px;height:24px;border-radius:6px;background:${col};display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff">${p?initials(p.name):'?'}</div>
+        <span style="font-weight:600;font-size:.82rem">${p?p.name:'Unknown'}</span>
+      </div></td>
+      <td style="font-size:.82rem">${a.type}</td>
+      <td class="mono">${fmt(a.start)}</td>
+      <td class="mono">${fmt(a.end)}</td>
+      <td><span class="tag">${dur}</span></td>
+      <td>${days===null?'—':days<0?`<span style="color:var(--red);font-weight:700">${Math.abs(days)}d ago</span>`:`<div style="display:flex;align-items:center;gap:.5rem">
+        <span style="font-family:var(--mono);font-size:.78rem;color:${days<=14?'var(--red)':days<=30?'var(--yellow)':'var(--text)';font-weight:${days<=30?700:400}">${days}d</span>
+        <div class="progress-wrap" style="width:60px"><div class="progress-bar ${days<=14?'danger':days<=30?'warn':''}" style="width:${prog}%"></div></div>
+      </div>`}</td>
+      <td>${a.autorenew==='yes'?'<span class="badge badge-green">Yes</span>':'<span class="badge badge-grey">No</span>'}</td>
+      <td>${statusBadge(st)}</td>
+      <td style="display:flex;gap:.3rem">
+        <button class="btn btn-sm btn-ghost" onclick="editAgreement('${a.id}')">✏</button>
+        <button class="btn btn-sm btn-ghost" onclick="renewAgreement('${a.id}')" title="Mark for renewal">↺</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function saveAgreement(){
+  const pid=document.getElementById('agr-partner').value;
+  const start=document.getElementById('agr-start').value;
+  const end=document.getElementById('agr-end').value;
+  if(!pid||!start||!end){toast('Please fill required fields','error');return;}
+  const agreements=getAgreements();
+  const newA={
+    id:genId(),partnerId:pid,
+    type:document.getElementById('agr-type').value,
+    start,end,
+    revpct:Number(document.getElementById('agr-revpct').value)||0,
+    autorenew:document.getElementById('agr-autorenew').value,
+    notice:Number(document.getElementById('agr-notice').value)||30,
+    status:document.getElementById('agr-status').value,
+    notes:document.getElementById('agr-notes').value,
+  };
+  agreements.push(newA);
+  DB.set('agreements',agreements);
+  closeModal('modal-add-agreement');
+  toast('Agreement saved','success');
+  renderAgreements();
+  renderDashboard();
+}
+
+function editAgreement(id){
+  const agreements=getAgreements();
+  const a=agreements.find(x=>x.id===id);
+  if(!a) return;
+  currentEditId=id;
+  const partners=getPartners();
+  document.getElementById('edit-agr-body').innerHTML=`
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Partner</label>
+        <select id="ea-partner">${partners.map(p=>`<option value="${p.id}" ${p.id===a.partnerId?'selected':''}>${p.name}</option>`).join('')}</select>
+      </div>
+      <div class="form-group">
+        <label>Agreement Type</label>
+        <select id="ea-type">${['Referral Agreement','Reseller Agreement','Technology Partnership','Agency Agreement','Affiliate Agreement','NDA','MSA'].map(t=>`<option ${t===a.type?'selected':''}>${t}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label>Start Date</label><input type="date" id="ea-start" value="${a.start}"></div>
+      <div class="form-group"><label>End Date</label><input type="date" id="ea-end" value="${a.end}"></div>
+      <div class="form-group"><label>Rev Share %</label><input type="number" id="ea-revpct" value="${a.revpct}"></div>
+      <div class="form-group"><label>Auto-Renew</label><select id="ea-autorenew"><option value="yes" ${a.autorenew==='yes'?'selected':''}>Yes</option><option value="no" ${a.autorenew==='no'?'selected':''}>No</option></select></div>
+      <div class="form-group"><label>Status</label><select id="ea-status">${['Active','Draft','Pending Renewal','Expiring Soon','Expired'].map(s=>`<option ${s===a.status?'selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="form-group"><label>Notice Period (days)</label><input type="number" id="ea-notice" value="${a.notice}"></div>
+      <div class="form-group span2"><label>Notes</label><textarea id="ea-notes">${a.notes||''}</textarea></div>
+    </div>`;
+  openModal('modal-edit-agreement');
+}
+
+function updateAgreement(){
+  const agreements=getAgreements();
+  const idx=agreements.findIndex(a=>a.id===currentEditId);
+  if(idx<0) return;
+  agreements[idx]={...agreements[idx],
+    partnerId:document.getElementById('ea-partner').value,
+    type:document.getElementById('ea-type').value,
+    start:document.getElementById('ea-start').value,
+    end:document.getElementById('ea-end').value,
+    revpct:Number(document.getElementById('ea-revpct').value)||0,
+    autorenew:document.getElementById('ea-autorenew').value,
+    status:document.getElementById('ea-status').value,
+    notice:Number(document.getElementById('ea-notice').value)||30,
+    notes:document.getElementById('ea-notes').value,
+  };
+  DB.set('agreements',agreements);
+  closeModal('modal-edit-agreement');
+  toast('Agreement updated','success');
+  renderAgreements();
+}
+
+function deleteAgreementCurrent(){
+  if(!confirm('Delete this agreement?')) return;
+  DB.set('agreements',getAgreements().filter(a=>a.id!==currentEditId));
+  closeModal('modal-edit-agreement');
+  toast('Agreement deleted');
+  renderAgreements();
+}
+
+function renewAgreement(id){
+  const agreements=getAgreements();
+  const idx=agreements.findIndex(a=>a.id===id);
+  if(idx<0) return;
+  agreements[idx].status='Pending Renewal';
+  DB.set('agreements',agreements);
+  toast('Marked for renewal','success');
+  renderAgreements();
+}
+
+// ═══════════════════════════════════════════════════
+// LEADS & REFERRALS
+// ═══════════════════════════════════════════════════
+function renderLeads(){
+  const leads=getLeads();
+  const q=(document.getElementById('lead-search')||{}).value?.toLowerCase()||'';
+  const sf=(document.getElementById('lead-filter-stage')||{}).value||'';
+  const pf=(document.getElementById('lead-filter-partner')||{}).value||'';
+
+  // populate partner filter
+  const sel=document.getElementById('lead-filter-partner');
+  if(sel.options.length<=1){
+    getPartners().forEach(p=>{
+      const o=document.createElement('option');o.value=p.id;o.textContent=p.name;sel.appendChild(o);
+    });
+  }
+
+  // Stats
+  const open=leads.filter(l=>!['Closed Won','Closed Lost'].includes(l.stage));
+  const won=leads.filter(l=>l.stage==='Closed Won');
+  const pipeline=open.reduce((s,l)=>s+(Number(l.value)||0),0);
+  const closed=won.reduce((s,l)=>s+(Number(l.value)||0),0);
+  const commissionTotal=won.reduce((s,l)=>s+((Number(l.value)||0)*(Number(l.revshare)||0)/100),0);
+  document.getElementById('lead-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Open Leads</div><div class="stat-value">${open.length}</div><div class="stat-delta delta-up">Active pipeline</div></div>
+    <div class="stat-card"><div class="stat-label">Pipeline Value</div><div class="stat-value" style="font-size:1.4rem">${fmtCcy(pipeline)}</div><div class="stat-delta delta-up">Open opportunities</div></div>
+    <div class="stat-card"><div class="stat-label">Closed Won</div><div class="stat-value" style="font-size:1.4rem">${fmtCcy(closed)}</div><div class="stat-delta delta-up">${won.length} deals</div></div>
+    <div class="stat-card"><div class="stat-label">Total Commissions</div><div class="stat-value" style="font-size:1.4rem">${fmtCcy(commissionTotal)}</div><div class="stat-delta delta-warn">On closed deals</div></div>
+  `;
+
+  let filtered=leads.filter(l=>{
+    const p=getPartnerById(l.partnerId);
+    if(q&&!l.company.toLowerCase().includes(q)&&!l.contact?.toLowerCase().includes(q)&&!p?.name.toLowerCase().includes(q)) return false;
+    if(sf&&l.stage!==sf) return false;
+    if(pf&&l.partnerId!==pf) return false;
+    return true;
+  }).sort((a,b)=>new Date(b.dateReferred)-new Date(a.dateReferred));
+
+  const tbody=document.getElementById('leads-tbody');
+  if(!filtered.length){
+    tbody.innerHTML=`<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⟳</div><div class="empty-title">No leads found</div></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML=filtered.map(l=>{
+    const p=getPartnerById(l.partnerId);
+    const commission=(Number(l.value)||0)*(Number(l.revshare)||0)/100;
+    return `<tr>
+      <td><div style="font-weight:600;font-size:.82rem">${l.company}</div></td>
+      <td style="font-size:.78rem;color:var(--text2)">${l.contact||'—'}<br><span style="color:var(--text3)">${l.email||''}</span></td>
+      <td><div style="display:flex;align-items:center;gap:.4rem">
+        ${p?`<div style="width:20px;height:20px;border-radius:5px;background:${p.color||avatarColor(p.name)};display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;color:#fff">${initials(p.name)}</div>`:'' }
+        <span style="font-size:.78rem;font-weight:500">${p?p.name:'Unknown'}</span>
+      </div></td>
+      <td>${statusBadge(l.stage)}</td>
+      <td class="mono">${fmtCcy(l.value)}</td>
+      <td><div style="font-size:.78rem"><div class="mono">${l.revshare||0}%</div><div style="color:var(--accent);font-weight:600">${fmtCcy(commission)}</div></div></td>
+      <td class="mono">${fmt(l.dateReferred)}</td>
+      <td class="mono" style="color:var(--text3)">${fmt(l.lastActivity)}</td>
+      <td>${l.hsid?`<span class="hs-badge hs-synced" style="font-size:.68rem">🔗 ${l.hsid}</span>`:`<span class="hs-badge hs-not-synced" style="font-size:.68rem">Not linked</span>`}</td>
+      <td style="display:flex;gap:.25rem">
+        <button class="btn btn-sm btn-ghost" onclick="editLead('${l.id}')">✏</button>
+        <button class="btn btn-sm btn-ghost" onclick="advanceLead('${l.id}')" title="Advance stage">→</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function saveLead(){
+  const company=document.getElementById('l-company').value.trim();
+  const pid=document.getElementById('l-partner').value;
+  if(!company||!pid){toast('Company and partner required','error');return;}
+  const leads=getLeads();
+  const p=getPartnerById(pid);
+  const newL={
+    id:genId(),company,
+    contact:document.getElementById('l-contact').value,
+    email:document.getElementById('l-email').value,
+    partnerId:pid,
+    value:Number(document.getElementById('l-value').value)||0,
+    revshare:Number(document.getElementById('l-revshare').value)||p?.revshare||0,
+    stage:document.getElementById('l-stage').value,
+    dateReferred:document.getElementById('l-date').value||new Date().toISOString().slice(0,10),
+    lastActivity:new Date().toISOString().slice(0,10),
+    closeDate:document.getElementById('l-close').value,
+    hsid:document.getElementById('l-hsid').value,
+    notes:document.getElementById('l-notes').value,
+  };
+  leads.push(newL);
+  DB.set('leads',leads);
+  closeModal('modal-add-lead');
+  ['l-company','l-contact','l-email','l-value','l-revshare','l-close','l-hsid','l-notes'].forEach(id=>document.getElementById(id).value='');
+  toast('Lead logged','success');
+  renderLeads();
+  renderDashboard();
+}
+
+function editLead(id){
+  const leads=getLeads();
+  const l=leads.find(x=>x.id===id);
+  if(!l) return;
+  currentEditId=id;
+  const partners=getPartners();
+  document.getElementById('edit-lead-body').innerHTML=`
+    <div class="form-grid">
+      <div class="form-group"><label>Company Name</label><input type="text" id="el-company" value="${l.company}"></div>
+      <div class="form-group"><label>Contact Name</label><input type="text" id="el-contact" value="${l.contact||''}"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="el-email" value="${l.email||''}"></div>
+      <div class="form-group"><label>Referred By</label><select id="el-partner">${partners.map(p=>`<option value="${p.id}" ${p.id===l.partnerId?'selected':''}>${p.name}</option>`).join('')}</select></div>
+      <div class="form-group"><label>Deal Value (£)</label><input type="number" id="el-value" value="${l.value}"></div>
+      <div class="form-group"><label>Rev Share %</label><input type="number" id="el-revshare" value="${l.revshare}"></div>
+      <div class="form-group"><label>Stage</label><select id="el-stage">${['Referred','Contacted','Qualified','Proposal','Negotiation','Closed Won','Closed Lost'].map(s=>`<option ${s===l.stage?'selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="form-group"><label>Date Referred</label><input type="date" id="el-date" value="${l.dateReferred}"></div>
+      <div class="form-group"><label>Expected Close Date</label><input type="date" id="el-close" value="${l.closeDate||''}"></div>
+      <div class="form-group"><label>HubSpot Deal ID</label><input type="text" id="el-hsid" value="${l.hsid||''}"></div>
+      <div class="form-group span2"><label>Notes</label><textarea id="el-notes">${l.notes||''}</textarea></div>
+    </div>`;
+  openModal('modal-edit-lead');
+}
+
+function updateLead(){
+  const leads=getLeads();
+  const idx=leads.findIndex(l=>l.id===currentEditId);
+  if(idx<0) return;
+  leads[idx]={...leads[idx],
+    company:document.getElementById('el-company').value,
+    contact:document.getElementById('el-contact').value,
+    email:document.getElementById('el-email').value,
+    partnerId:document.getElementById('el-partner').value,
+    value:Number(document.getElementById('el-value').value)||0,
+    revshare:Number(document.getElementById('el-revshare').value)||0,
+    stage:document.getElementById('el-stage').value,
+    dateReferred:document.getElementById('el-date').value,
+    closeDate:document.getElementById('el-close').value,
+    hsid:document.getElementById('el-hsid').value,
+    notes:document.getElementById('el-notes').value,
+    lastActivity:new Date().toISOString().slice(0,10),
+  };
+  DB.set('leads',leads);
+  closeModal('modal-edit-lead');
+  toast('Lead updated','success');
+  renderLeads();
+  renderDashboard();
+}
+
+function deleteLeadCurrent(){
+  if(!confirm('Delete this lead?')) return;
+  DB.set('leads',getLeads().filter(l=>l.id!==currentEditId));
+  closeModal('modal-edit-lead');
+  toast('Lead deleted');
+  renderLeads();
+}
+
+function advanceLead(id){
+  const stageOrder=['Referred','Contacted','Qualified','Proposal','Negotiation','Closed Won'];
+  const leads=getLeads();
+  const idx=leads.findIndex(l=>l.id===id);
+  if(idx<0) return;
+  const cur=stageOrder.indexOf(leads[idx].stage);
+  if(cur<0||cur>=stageOrder.length-1) return;
+  leads[idx].stage=stageOrder[cur+1];
+  leads[idx].lastActivity=new Date().toISOString().slice(0,10);
+  DB.set('leads',leads);
+  toast(`Moved to ${leads[idx].stage}`,'success');
+  renderLeads();
+  renderDashboard();
+}
+
+// ═══════════════════════════════════════════════════
+// REV SHARE
+// ═══════════════════════════════════════════════════
+function renderRevShare(){
+  const leads=getLeads().filter(l=>l.stage==='Closed Won');
+  const partners=getPartners();
+
+  const totalRev=leads.reduce((s,l)=>s+(Number(l.value)||0),0);
+  const totalComm=leads.reduce((s,l)=>s+((Number(l.value)||0)*(Number(l.revshare)||0)/100),0);
+  const outstanding=totalComm; // mock — would track paid vs unpaid
+
+  document.getElementById('rev-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Total Partner Revenue</div><div class="stat-value">${fmtCcy(totalRev)}</div><div class="stat-delta delta-up">Closed Won deals</div></div>
+    <div class="stat-card"><div class="stat-label">Total Commissions</div><div class="stat-value" style="font-size:1.4rem">${fmtCcy(totalComm)}</div><div class="stat-delta delta-warn">Across all partners</div></div>
+    <div class="stat-card"><div class="stat-label">Partners Owed</div><div class="stat-value">${partners.filter(p=>leads.some(l=>l.partnerId===p.id)).length}</div><div class="stat-delta delta-warn">Have unpaid commissions</div></div>
+    <div class="stat-card"><div class="stat-label">Avg Rev Share %</div><div class="stat-value">${leads.length?(leads.reduce((s,l)=>s+(Number(l.revshare)||0),0)/leads.length).toFixed(1):0}%</div><div class="stat-delta">Weighted average</div></div>
+  `;
+
+  // Per-partner breakdown
+  const partnerData=partners.map(p=>{
+    const pLeads=leads.filter(l=>l.partnerId===p.id);
+    const dealVal=pLeads.reduce((s,l)=>s+(Number(l.value)||0),0);
+    const commission=pLeads.reduce((s,l)=>s+((Number(l.value)||0)*(Number(l.revshare)||0)/100),0);
+    const paid=commission*0.7; // mock 70% paid
+    return {p,deals:pLeads.length,dealVal,commission,paid,outstanding:commission-paid};
+  }).filter(x=>x.deals>0).sort((a,b)=>b.commission-a.commission);
+
+  const tbody=document.getElementById('revshare-tbody');
+  tbody.innerHTML=partnerData.map(({p,deals,dealVal,commission,paid,outstanding})=>{
+    const paidPct=commission>0?Math.round(paid/commission*100):0;
+    const st=outstanding>0?'badge-yellow':'badge-green';
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:.5rem">
+        <div style="width:24px;height:24px;border-radius:6px;background:${p.color||avatarColor(p.name)};display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff">${initials(p.name)}</div>
+        <span style="font-weight:600;font-size:.82rem">${p.name}</span>
+      </div></td>
+      <td style="text-align:center">${deals}</td>
+      <td class="mono">${fmtCcy(dealVal)}</td>
+      <td class="mono">${p.revshare}%</td>
+      <td class="mono" style="font-weight:700">${fmtCcy(commission)}</td>
+      <td class="mono" style="color:var(--green)">${fmtCcy(paid)}</td>
+      <td class="mono" style="color:${outstanding>0?'var(--accent)':'var(--text3)'}">${fmtCcy(outstanding)}</td>
+      <td><span class="badge ${st}">${outstanding>0?'Partial':'Paid'}</span></td>
+      <td><button class="btn btn-sm btn-success" onclick="markPaid('${p.id}')">Mark Paid</button></td>
+    </tr>`;
+  }).join('');
+
+  if(!partnerData.length) tbody.innerHTML=`<tr><td colspan="9"><div class="empty-state"><div>No closed deals yet</div></div></td></tr>`;
+
+  // Top earners widget
+  document.getElementById('rev-top-list').innerHTML=partnerData.slice(0,5).map(({p,commission})=>{
+    const maxComm=partnerData[0]?.commission||1;
+    return `<div class="rev-partner-row">
+      <div style="width:24px;height:24px;border-radius:6px;background:${p.color||avatarColor(p.name)};display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff">${initials(p.name)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:600">${p.name}</div>
+        <div class="rev-bar-wrap" style="margin-top:3px"><div class="rev-bar" style="width:${(commission/maxComm*100).toFixed(0)}%"></div></div>
+      </div>
+      <div style="font-size:.75rem;font-weight:700">${fmtCcy(commission)}</div>
+    </div>`;
+  }).join('');
+
+  drawDonut();
+}
+
+function markPaid(partnerId){
+  toast('Marked as paid — in production this would update your finance records','success');
+}
+
+function exportRevShare(){
+  const leads=getLeads().filter(l=>l.stage==='Closed Won');
+  const rows=[['Partner','Company','Deal Value','Rev Share %','Commission','Date Closed']];
+  leads.forEach(l=>{
+    const p=getPartnerById(l.partnerId);
+    rows.push([p?.name||'',l.company,l.value,l.revshare,(l.value*l.revshare/100).toFixed(2),l.closeDate||l.dateReferred]);
+  });
+  const csv=rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv,'+encodeURIComponent(csv);
+  a.download='rev-share-report.csv';
+  a.click();
+  toast('CSV exported','success');
+}
+
+function drawDonut(){
+  const ctx=document.getElementById('rev-donut');
+  if(!ctx) return;
+  const leads=getLeads().filter(l=>l.stage==='Closed Won');
+  const typeRev={};
+  leads.forEach(l=>{
+    const p=getPartnerById(l.partnerId);
+    const t=p?.type||'Other';
+    typeRev[t]=(typeRev[t]||0)+(Number(l.value)||0);
+  });
+  const entries=Object.entries(typeRev).sort((a,b)=>b[1]-a[1]);
+  const colors=['#d4500a','#1a5fa0','#1a7a4a','#b58a00','#7a3ab8','#c0392b'];
+  const W=ctx.parentElement.offsetWidth; const H=140;
+  ctx.width=W*devicePixelRatio;ctx.height=H*devicePixelRatio;
+  ctx.style.width=W+'px';ctx.style.height=H+'px';
+  const c=ctx.getContext('2d');c.scale(devicePixelRatio,devicePixelRatio);
+  const total=entries.reduce((s,[,v])=>s+v,0)||1;
+  const cx=H/2,cy=H/2,r=52,ir=34;
+  let angle=-Math.PI/2;
+  entries.forEach(([,v],i)=>{
+    const sweep=(v/total)*Math.PI*2;
+    c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,r,angle,angle+sweep);c.closePath();
+    c.fillStyle=colors[i%colors.length];c.fill();
+    angle+=sweep;
+  });
+  c.beginPath();c.arc(cx,cy,ir,0,Math.PI*2);c.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--surface').trim()||'#fff';c.fill();
+  // Legend
+  c.font='500 10px Outfit';c.textAlign='left';
+  entries.slice(0,5).forEach(([t,v],i)=>{
+    const x=H+10;const y=20+i*22;
+    c.fillStyle=colors[i%colors.length];c.fillRect(x,y-8,10,10);
+    c.fillStyle='#5a574f';c.fillText(t,x+14,y);
+    c.fillStyle='#9b9790';c.fillText('£'+(v/1000).toFixed(0)+'k',x+14,y+11);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// HUBSPOT
+// ═══════════════════════════════════════════════════
+function renderHubspot(){
+  const hsConfig=DB.get('hs-config')||{connected:true,portal:'8291047'};
+  const synced=hsConfig.connected;
+
+  document.getElementById('hs-status-banner').innerHTML=`
+    <div class="alert ${synced?'alert-success':'alert-warn'}" style="margin-bottom:1rem">
+      <span class="alert-icon">${synced?'✓':'⚠'}</span>
+      <div class="alert-text">
+        <strong>${synced?'HubSpot Connected (Mock Mode)':'HubSpot Not Connected'}</strong>
+        ${synced?`Portal ID: ${hsConfig.portal} · Last sync: ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})} · This is a mock integration — connect your real API key to go live.`:'Configure your HubSpot API credentials to enable sync.'}
+      </div>
+    </div>`;
+
+  const leads=getLeads();
+  const partners=getPartners();
+
+  document.getElementById('hs-tbody').innerHTML=leads.map(l=>{
+    const p=getPartnerById(l.partnerId);
+    const synced=!!l.hsid;
+    const lastSync=synced?new Date(Date.now()-Math.random()*3600000).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):null;
+    return `<tr>
+      <td><strong style="font-size:.82rem">${l.company}</strong><br><span style="font-size:.72rem;color:var(--text3)">${l.contact||''}</span></td>
+      <td style="font-size:.78rem">${p?p.name:'—'}</td>
+      <td class="mono">${l.hsid||'<span style="color:var(--text3)">—</span>'}</td>
+      <td>${statusBadge(l.stage)}</td>
+      <td class="mono">${fmtCcy(l.value)}</td>
+      <td>${synced?`<span class="hs-badge hs-synced">🔗 Synced</span>`:`<span class="hs-badge hs-not-synced">Not synced</span>`}</td>
+      <td style="font-size:.72rem;color:var(--text3)">${lastSync?lastSync+'today':'—'}</td>
+      <td><button class="btn btn-sm btn-ghost" onclick="syncLead('${l.id}')">${synced?'↺ Re-sync':'⟐ Push to HS'}</button></td>
+    </tr>`;
+  }).join('');
+
+  // Summary
+  const synced_count=leads.filter(l=>l.hsid).length;
+  document.getElementById('hs-summary').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+      <div style="background:var(--bg);border-radius:8px;padding:.75rem;text-align:center">
+        <div style="font-size:1.5rem;font-weight:800">${synced_count}</div>
+        <div style="font-size:.72rem;color:var(--text3)">Deals Synced</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:.75rem;text-align:center">
+        <div style="font-size:1.5rem;font-weight:800">${leads.length-synced_count}</div>
+        <div style="font-size:.72rem;color:var(--text3)">Not Synced</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:.75rem;text-align:center">
+        <div style="font-size:1.5rem;font-weight:800">${partners.filter(p=>p.hsid).length}</div>
+        <div style="font-size:.72rem;color:var(--text3)">Partners Linked</div>
+      </div>
+      <div style="background:var(--green-light);border:1px solid var(--green-border);border-radius:8px;padding:.75rem;text-align:center">
+        <div style="font-size:.75rem;font-weight:700;color:var(--green)">✓ Connected</div>
+        <div style="font-size:.7rem;color:var(--text3)">Mock Mode</div>
+      </div>
+    </div>`;
+
+  // Sync log
+  const log=getHsLog();
+  document.getElementById('hs-log').innerHTML=log.map(e=>`
+    <div style="display:flex;gap:.6rem;padding:.5rem 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:.8rem">${e.type==='success'?'✓':'✕'}</span>
+      <div>
+        <div style="font-size:.76rem;font-weight:600;color:${e.type==='success'?'var(--green)':'var(--red)'}">${e.action}</div>
+        <div style="font-size:.72rem;color:var(--text3)">${e.detail}</div>
+        <div style="font-size:.68rem;color:var(--text3);font-family:var(--mono)">${e.time}</div>
+      </div>
+    </div>`).join('');
+}
+
+function syncLead(id){
+  const leads=getLeads();
+  const idx=leads.findIndex(l=>l.id===id);
+  if(idx<0) return;
+  if(!leads[idx].hsid){
+    leads[idx].hsid='deal_'+Math.floor(Math.random()*90000+10000);
+    DB.set('leads',leads);
+  }
+  const log=getHsLog();
+  log.unshift({
+    time:new Date().toISOString().slice(0,16).replace('T',' '),
+    action:'Deal synced to HubSpot',
+    detail:`${leads[idx].company} → ${leads[idx].hsid}`,
+    type:'success'
+  });
+  DB.set('hslog',log);
+  toast('Synced to HubSpot (mock)','success');
+  renderHubspot();
+}
+
+function simulateHubSpotSync(){
+  const leads=getLeads();
+  let updated=0;
+  leads.forEach(l=>{
+    if(!l.hsid&&Math.random()>0.4){
+      l.hsid='deal_'+Math.floor(Math.random()*90000+10000);
+      updated++;
+    }
+  });
+  DB.set('leads',leads);
+  const log=getHsLog();
+  log.unshift({
+    time:new Date().toISOString().slice(0,16).replace('T',' '),
+    action:'Full sync completed',
+    detail:`${updated} new deals pushed, ${leads.filter(l=>l.hsid).length} total synced`,
+    type:'success'
+  });
+  DB.set('hslog',log);
+  toast(`Sync complete — ${updated} deals updated`,'success');
+  renderHubspot();
+}
+
+function saveHsConfig(){
+  DB.set('hs-config',{connected:true,portal:document.getElementById('hs-portal').value});
+  closeModal('modal-hs-connect');
+  toast('HubSpot configuration saved (mock mode)','success');
+  renderHubspot();
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+seedData();
+renderDashboard();
+</script>
+</body>
+</html>
