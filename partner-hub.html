@@ -404,9 +404,42 @@ canvas{width:100%!important}
   .form-grid{grid-template-columns:1fr}
   .form-group.span2{grid-column:span 1}
 }
+/* ── SPLASH SCREEN ── */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  background:#0a0a0a;
+  transition:opacity 0.6s ease, visibility 0.6s ease;
+}
+#splash.fade-out{opacity:0;visibility:hidden;pointer-events:none}
+#splash img{
+  width:100%;height:100%;object-fit:cover;object-position:center top;
+  position:absolute;inset:0;
+}
+#splash .splash-btn{
+  position:relative;z-index:1;
+  margin-bottom:60px;
+  padding:14px 52px;
+  background:var(--accent);color:#fff;
+  font-family:var(--font);font-size:1.05rem;font-weight:600;
+  border:none;border-radius:50px;cursor:pointer;
+  letter-spacing:0.3px;
+  transition:transform 0.2s, box-shadow 0.2s;
+  box-shadow:0 4px 24px rgba(0,0,0,0.5);
+}
+#splash .splash-btn:hover{
+  transform:scale(1.05);
+  box-shadow:0 6px 32px rgba(212,80,10,0.6);
+}
 </style>
 </head>
 <body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <img src="splash.png" alt="PartnerHub">
+  <button class="splash-btn" onclick="dismissSplash()">Enter Dashboard</button>
+</div>
 
 <!-- SIDEBAR -->
 <aside id="sidebar">
@@ -1746,7 +1779,7 @@ function renderAgreements(){
       <td class="mono">${fmt(a.end)}</td>
       <td><span class="tag">${dur}</span></td>
       <td>${days===null?'—':days<0?`<span style="color:var(--red);font-weight:700">${Math.abs(days)}d ago</span>`:`<div style="display:flex;align-items:center;gap:.5rem">
-        <span style="font-family:var(--mono);font-size:.78rem;color:${days<=14?'var(--red)':days<=30?'var(--yellow)':'var(--text)';font-weight:${days<=30?700:400}">${days}d</span>
+        <span style="font-family:var(--mono);font-size:.78rem;color:${days<=14?'var(--red)':days<=30?'var(--yellow)':'var(--text)'};font-weight:${days<=30?700:400}">${days}d</span>
         <div class="progress-wrap" style="width:60px"><div class="progress-bar ${days<=14?'danger':days<=30?'warn':''}" style="width:${prog}%"></div></div>
       </div>`}</td>
       <td>${a.autorenew==='yes'?'<span class="badge badge-green">Yes</span>':'<span class="badge badge-grey">No</span>'}</td>
@@ -2254,6 +2287,15 @@ function saveHsConfig(){
   closeModal('modal-hs-connect');
   toast('HubSpot configuration saved (mock mode)','success');
   renderHubspot();
+}
+
+// ═══════════════════════════════════════════════════
+// SPLASH
+// ═══════════════════════════════════════════════════
+function dismissSplash(){
+  const s=document.getElementById('splash');
+  s.classList.add('fade-out');
+  setTimeout(()=>s.remove(),600);
 }
 
 // ═══════════════════════════════════════════════════
