@@ -50,8 +50,20 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   display:flex;flex-direction:column;
   position:fixed;top:0;left:0;bottom:0;
   z-index:40;
+  transition:transform .25s ease,width .25s ease;
 }
-.sidebar-logo{
+#sidebar.collapsed{transform:translateX(-232px)}
+#main{margin-left:232px;flex:1;min-height:100vh;display:flex;flex-direction:column;transition:margin-left .25s ease}
+#main.expanded{margin-left:0}
+.sidebar-toggle{
+  width:30px;height:30px;border-radius:6px;flex-shrink:0;
+  background:var(--bg);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:.8rem;color:var(--text3);
+  transition:background .15s,color .15s;
+  margin-right:.75rem;
+}
+.sidebar-toggle:hover{background:var(--bg2);color:var(--text)}.sidebar-logo{
   padding:1.5rem 1.25rem 1rem;
   display:flex;align-items:center;gap:.6rem;
   border-bottom:1px solid var(--border);
@@ -100,7 +112,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .user-role{font-size:.7rem;color:var(--text3)}
 
 /* ── MAIN ── */
-#main{margin-left:232px;flex:1;min-height:100vh;display:flex;flex-direction:column}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -161,16 +172,17 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .data-table th{
   background:var(--bg);font-size:.7rem;font-weight:700;
   text-transform:uppercase;letter-spacing:.07em;color:var(--text3);
-  padding:.65rem 1rem;text-align:left;border-bottom:1px solid var(--border);
+  padding:.6rem .75rem;text-align:left;border-bottom:1px solid var(--border);
   white-space:nowrap;
 }
 .data-table td{
-  padding:.8rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);
-  vertical-align:middle;
+  padding:.65rem .75rem;font-size:.82rem;border-bottom:1px solid var(--border);
+  vertical-align:middle;white-space:nowrap;
 }
 .data-table tr:last-child td{border-bottom:none}
 .data-table tr:hover td{background:var(--bg)}
 .data-table .mono{font-family:var(--mono);font-size:.75rem}
+.data-table td.wrap{white-space:normal}
 
 /* ── BADGES ── */
 .badge{
@@ -293,6 +305,36 @@ textarea{resize:vertical;min-height:70px}
 .card-stat-label{font-size:.65rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.15rem}
 .card-stat-value{font-size:.85rem;font-weight:700}
 
+/* ── LEAD STRIP ── */
+.lead-strip{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:.4rem;margin-top:.75rem;padding-top:.75rem;
+  border-top:1px solid var(--border);
+}
+.lead-strip-btn{
+  background:var(--bg);border:1px solid var(--border);border-radius:7px;
+  padding:.4rem .3rem;text-align:center;cursor:pointer;
+  transition:all .15s;
+}
+.lead-strip-btn:hover{border-color:var(--accent);background:var(--accent-light)}
+.lead-strip-btn .ls-count{font-size:1rem;font-weight:800;line-height:1}
+.lead-strip-btn .ls-label{font-size:.62rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-top:.15rem}
+.lead-strip-btn.ls-total .ls-count{color:var(--text)}
+.lead-strip-btn.ls-open .ls-count{color:var(--blue)}
+.lead-strip-btn.ls-won .ls-count{color:var(--green)}
+
+/* ── GLANCE MODAL ── */
+.glance-lead-row{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.6rem .75rem;border-radius:8px;
+  border:1px solid var(--border);background:var(--surface);
+  margin-bottom:.4rem;
+}
+.glance-lead-row:last-child{margin-bottom:0}
+.glance-company{font-size:.82rem;font-weight:600;flex:1}
+.glance-meta{font-size:.72rem;color:var(--text3)}
+.glance-value{font-size:.8rem;font-weight:700;font-family:var(--mono);color:var(--text2)}
+
 /* ── DETAIL PANEL ── */
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
 .detail-item{}
@@ -392,6 +434,68 @@ canvas{width:100%!important}
 .rev-bar-wrap{flex:1;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden}
 .rev-bar{height:100%;background:var(--accent);border-radius:3px}
 
+/* ── CONTRACT UPLOAD ── */
+.upload-zone{
+  border:2px dashed var(--border2);border-radius:12px;
+  padding:2.5rem 1.5rem;text-align:center;cursor:pointer;
+  transition:all .2s;background:var(--bg);position:relative;
+}
+.upload-zone:hover,.upload-zone.dragover{
+  border-color:var(--accent);background:var(--accent-light);
+}
+.upload-zone input[type=file]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+}
+.upload-icon{font-size:2rem;margin-bottom:.6rem;display:block}
+.upload-title{font-size:.9rem;font-weight:700;margin-bottom:.25rem}
+.upload-sub{font-size:.78rem;color:var(--text3)}
+
+.extract-state{display:none;flex-direction:column;align-items:center;padding:2rem;gap:.75rem}
+.extract-state.show{display:flex}
+.extract-spinner{
+  width:40px;height:40px;border:3px solid var(--border2);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.extract-label{font-size:.85rem;font-weight:500;color:var(--text2)}
+.extract-sub{font-size:.75rem;color:var(--text3)}
+
+.extracted-fields{
+  background:var(--accent-light);border:1px solid var(--accent-border);
+  border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;
+}
+.extracted-header{
+  display:flex;align-items:center;gap:.5rem;
+  font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:.75rem;
+}
+.extracted-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .75rem}
+.extracted-item{}
+.extracted-key{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:.1rem}
+.extracted-val{font-size:.8rem;font-weight:600;color:var(--text)}
+.confidence-bar{display:flex;align-items:center;gap:.4rem;margin-top:.5rem}
+.confidence-label{font-size:.68rem;color:var(--text3)}
+.confidence-pip{width:8px;height:8px;border-radius:50%;background:var(--border2)}
+.confidence-pip.filled{background:var(--green)}
+.confidence-pip.partial{background:var(--yellow)}
+
+.api-key-notice{
+  background:var(--yellow-light);border:1px solid var(--yellow-border);
+  border-radius:8px;padding:.75rem 1rem;font-size:.78rem;
+  display:flex;gap:.5rem;align-items:flex-start;margin-bottom:1rem;
+}
+.api-key-input-wrap{display:flex;gap:.5rem;margin-top:.4rem}
+.api-key-input-wrap input{flex:1;font-family:var(--mono);font-size:.75rem}
+
+.file-preview{
+  background:var(--bg);border:1px solid var(--border);border-radius:8px;
+  padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;
+  margin-bottom:1rem;
+}
+.file-preview-icon{font-size:1.4rem}
+.file-preview-name{font-size:.82rem;font-weight:600;flex:1}
+.file-preview-size{font-size:.72rem;color:var(--text3)}
+
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -404,42 +508,9 @@ canvas{width:100%!important}
   .form-grid{grid-template-columns:1fr}
   .form-group.span2{grid-column:span 1}
 }
-/* ── SPLASH SCREEN ── */
-#splash{
-  position:fixed;inset:0;z-index:9999;
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  background:#0a0a0a;
-  transition:opacity 0.6s ease, visibility 0.6s ease;
-}
-#splash.fade-out{opacity:0;visibility:hidden;pointer-events:none}
-#splash img{
-  width:100%;height:100%;object-fit:cover;object-position:center top;
-  position:absolute;inset:0;
-}
-#splash .splash-btn{
-  position:relative;z-index:1;
-  margin-bottom:60px;
-  padding:14px 52px;
-  background:var(--accent);color:#fff;
-  font-family:var(--font);font-size:1.05rem;font-weight:600;
-  border:none;border-radius:50px;cursor:pointer;
-  letter-spacing:0.3px;
-  transition:transform 0.2s, box-shadow 0.2s;
-  box-shadow:0 4px 24px rgba(0,0,0,0.5);
-}
-#splash .splash-btn:hover{
-  transform:scale(1.05);
-  box-shadow:0 6px 32px rgba(212,80,10,0.6);
-}
 </style>
 </head>
 <body>
-
-<!-- SPLASH SCREEN -->
-<div id="splash">
-  <img src="splash.png" alt="PartnerHub">
-  <button class="splash-btn" onclick="dismissSplash()">Enter Dashboard</button>
-</div>
 
 <!-- SIDEBAR -->
 <aside id="sidebar">
@@ -492,12 +563,13 @@ canvas{width:100%!important}
   </div>
 
   <div class="sidebar-bottom">
-    <div class="user-row">
-      <div class="user-avatar">AJ</div>
-      <div>
-        <div class="user-name">Alex Johnson</div>
-        <div class="user-role">Head of Partnerships</div>
+    <div class="user-row" onclick="openEditProfile()" title="Edit profile" style="cursor:pointer;border-radius:8px;padding:.35rem .4rem;margin:-.35rem -.4rem;transition:background .15s" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background='transparent'">
+      <div class="user-avatar" id="profile-avatar">AJ</div>
+      <div style="flex:1;min-width:0">
+        <div class="user-name" id="profile-name">Alex Johnson</div>
+        <div class="user-role" id="profile-title">Head of Partnerships</div>
       </div>
+      <span style="font-size:.7rem;color:var(--text3);flex-shrink:0">✏</span>
     </div>
   </div>
 </aside>
@@ -508,6 +580,7 @@ canvas{width:100%!important}
   <!-- ═══════════════════ DASHBOARD ═══════════════════ -->
   <div class="page active" id="page-dashboard">
     <div class="topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">◀</button>
       <div>
         <span class="topbar-title">Dashboard</span>
         <span class="topbar-sub" id="dash-date"></span>
@@ -550,6 +623,7 @@ canvas{width:100%!important}
   <!-- ═══════════════════ PARTNERS ═══════════════════ -->
   <div class="page" id="page-partners">
     <div class="topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">◀</button>
       <div>
         <span class="topbar-title">Partners</span>
         <span class="topbar-sub" id="partners-count"></span>
@@ -568,11 +642,9 @@ canvas{width:100%!important}
         </div>
         <select class="filter-select btn btn-secondary" id="partner-filter-type" onchange="renderPartners()">
           <option value="">All Types</option>
-          <option>Reseller</option>
-          <option>Referral</option>
           <option>Technology</option>
+          <option>Consultant</option>
           <option>Agency</option>
-          <option>Affiliate</option>
         </select>
         <select class="filter-select btn btn-secondary" id="partner-filter-status" onchange="renderPartners()">
           <option value="">All Status</option>
@@ -589,11 +661,13 @@ canvas{width:100%!important}
   <!-- ═══════════════════ AGREEMENTS ═══════════════════ -->
   <div class="page" id="page-agreements">
     <div class="topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">◀</button>
       <div>
         <span class="topbar-title">Agreements</span>
         <span class="topbar-sub">Track contract terms, renewal dates & compliance</span>
       </div>
       <div class="topbar-actions">
+        <button class="btn btn-secondary" onclick="openModal('modal-upload-contract')">⬆ Upload Contract</button>
         <button class="btn btn-primary" onclick="openModal('modal-add-agreement')">＋ New Agreement</button>
       </div>
     </div>
@@ -621,11 +695,17 @@ canvas{width:100%!important}
           <thead>
             <tr>
               <th>Partner</th>
+              <th>Partner Type</th>
+              <th>Primary Contact</th>
               <th>Agreement Type</th>
               <th>Start Date</th>
               <th>End Date</th>
               <th>Duration</th>
               <th>Days Left</th>
+              <th>Closed Deal Fee</th>
+              <th>Wingman Fee</th>
+              <th>Signatory</th>
+              <th>Manager</th>
               <th>Auto-Renew</th>
               <th>Status</th>
               <th>Actions</th>
@@ -640,6 +720,7 @@ canvas{width:100%!important}
   <!-- ═══════════════════ REFERRALS & LEADS ═══════════════════ -->
   <div class="page" id="page-referrals">
     <div class="topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">◀</button>
       <div>
         <span class="topbar-title">Referrals & Leads</span>
         <span class="topbar-sub">Track partner-sourced opportunities through your pipeline</span>
@@ -678,7 +759,8 @@ canvas{width:100%!important}
               <th>Referred By</th>
               <th>Stage</th>
               <th>Deal Value</th>
-              <th>Rev Share</th>
+              <th>Fee Type</th>
+              <th>Fee Rate / Commission</th>
               <th>Date Referred</th>
               <th>Last Activity</th>
               <th>HubSpot</th>
@@ -694,6 +776,7 @@ canvas{width:100%!important}
   <!-- ═══════════════════ REV SHARE ═══════════════════ -->
   <div class="page" id="page-revshare">
     <div class="topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">◀</button>
       <div>
         <span class="topbar-title">Rev Share Reports</span>
         <span class="topbar-sub">Commission calculations, payouts & reconciliation</span>
@@ -755,6 +838,7 @@ canvas{width:100%!important}
   <!-- ═══════════════════ HUBSPOT ═══════════════════ -->
   <div class="page" id="page-hubspot">
     <div class="topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">◀</button>
       <div>
         <span class="topbar-title">HubSpot Sync</span>
         <span class="topbar-sub">Manage CRM integration & deal attribution</span>
@@ -828,11 +912,9 @@ canvas{width:100%!important}
         <div class="form-group">
           <label>Partner Type *</label>
           <select id="p-type">
-            <option>Reseller</option>
-            <option>Referral</option>
             <option>Technology</option>
+            <option>Consultant</option>
             <option>Agency</option>
-            <option>Affiliate</option>
           </select>
         </div>
         <div class="form-group">
@@ -865,12 +947,22 @@ canvas{width:100%!important}
           </select>
         </div>
         <div class="form-group">
-          <label>Default Rev Share %</label>
-          <input type="number" id="p-revshare" placeholder="20" min="0" max="100">
+          <label>Closed Deal Fee %</label>
+          <input type="number" id="p-revshare" placeholder="e.g. 20" min="0" max="100">
+          <div class="input-hint">Default rev share when partner closes the deal directly</div>
+        </div>
+        <div class="form-group">
+          <label>Wingman Closed Deal Fee %</label>
+          <input type="number" id="p-wingman-revshare" placeholder="e.g. 10" min="0" max="100">
+          <div class="input-hint">Default rev share when partner assisted but did not close</div>
         </div>
         <div class="form-group">
           <label>HubSpot Company ID (optional)</label>
           <input type="text" id="p-hsid" placeholder="12345678">
+        </div>
+        <div class="form-group">
+          <label>Partner Manager</label>
+          <input type="text" id="p-manager" placeholder="e.g. Sarah Jones">
         </div>
         <div class="form-group span2">
           <label>Notes</label>
@@ -894,10 +986,42 @@ canvas{width:100%!important}
     </div>
     <div class="modal-body">
       <div class="form-grid">
-        <div class="form-group">
+
+        <!-- Partner selector + inline name edit -->
+        <div class="form-group span2">
           <label>Partner *</label>
-          <select id="agr-partner"></select>
+          <div style="display:flex;gap:.5rem;align-items:flex-start">
+            <select id="agr-partner" style="flex:1" onchange="toggleNewAgrPartnerEdit()"></select>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="toggleNewAgrPartnerEdit()" id="agr-edit-name-btn">✏ Edit Name</button>
+          </div>
+          <div id="agr-partner-name-wrap" style="display:none;margin-top:.5rem;background:var(--accent-light);border:1px solid var(--accent-border);border-radius:8px;padding:.75rem">
+            <div style="font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">✏ Editing partner name</div>
+            <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:.6rem">
+              <div class="form-group">
+                <label>Partner Name</label>
+                <input type="text" id="agr-partner-name" placeholder="Company name">
+              </div>
+              <div class="form-group">
+                <label>Partner Type</label>
+                <select id="agr-partner-type">
+                  <option>Technology</option>
+                  <option>Consultant</option>
+                  <option>Agency</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Primary Contact</label>
+                <input type="text" id="agr-partner-contact" placeholder="Jane Smith">
+              </div>
+              <div class="form-group">
+                <label>Contact Email</label>
+                <input type="email" id="agr-partner-email" placeholder="jane@company.com">
+              </div>
+            </div>
+            <div style="margin-top:.3rem;font-size:.72rem;color:var(--text3)">Changes will update the partner record across the entire app.</div>
+          </div>
         </div>
+
         <div class="form-group">
           <label>Agreement Type *</label>
           <select id="agr-type">
@@ -911,6 +1035,14 @@ canvas{width:100%!important}
           </select>
         </div>
         <div class="form-group">
+          <label>Status</label>
+          <select id="agr-status">
+            <option>Active</option>
+            <option>Draft</option>
+            <option>Pending Renewal</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label>Start Date *</label>
           <input type="date" id="agr-start">
         </div>
@@ -919,8 +1051,14 @@ canvas{width:100%!important}
           <input type="date" id="agr-end">
         </div>
         <div class="form-group">
-          <label>Rev Share % in Agreement</label>
-          <input type="number" id="agr-revpct" placeholder="20" min="0" max="100">
+          <label>Closed Deal Fee %</label>
+          <input type="number" id="agr-revpct" placeholder="e.g. 20" min="0" max="100">
+          <div class="input-hint">Rev share on deals closed directly by the partner</div>
+        </div>
+        <div class="form-group">
+          <label>Wingman Closed Deal Fee %</label>
+          <input type="number" id="agr-wingman-revpct" placeholder="e.g. 10" min="0" max="100">
+          <div class="input-hint">Rev share where partner assisted but did not close</div>
         </div>
         <div class="form-group">
           <label>Auto-Renew</label>
@@ -934,14 +1072,9 @@ canvas{width:100%!important}
           <input type="number" id="agr-notice" placeholder="30" value="30">
         </div>
         <div class="form-group">
-          <label>Status</label>
-          <select id="agr-status">
-            <option>Active</option>
-            <option>Draft</option>
-            <option>Pending Renewal</option>
-          </select>
+          <label>Partner Manager</label>
+          <input type="text" id="agr-manager" placeholder="e.g. Sarah Jones">
         </div>
-        <div class="form-group span2">
           <label>Key Terms / Notes</label>
           <textarea id="agr-notes" placeholder="Summarise key terms, obligations, exclusions…"></textarea>
         </div>
@@ -977,15 +1110,26 @@ canvas{width:100%!important}
         </div>
         <div class="form-group">
           <label>Referred By (Partner) *</label>
-          <select id="l-partner"></select>
+          <select id="l-partner" onchange="updateLeadFeeRate()"></select>
         </div>
         <div class="form-group">
           <label>Deal Value (£)</label>
           <input type="number" id="l-value" placeholder="25000">
         </div>
         <div class="form-group">
-          <label>Rev Share % for This Deal</label>
-          <input type="number" id="l-revshare" placeholder="20" min="0" max="100">
+          <label>Fee Type</label>
+          <select id="l-fee-type" onchange="updateLeadFeeRate()">
+            <option value="closed">Closed Deal Fee</option>
+            <option value="wingman">Wingman Closed Deal Fee</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fee Rate %</label>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <input type="number" id="l-revshare" placeholder="—" min="0" max="100" style="flex:1">
+            <span id="l-fee-source" style="font-size:.7rem;color:var(--text3);white-space:nowrap"></span>
+          </div>
+          <div class="input-hint">Auto-filled from partner/agreement — override if needed</div>
         </div>
         <div class="form-group">
           <label>Pipeline Stage</label>
@@ -1129,10 +1273,321 @@ canvas{width:100%!important}
   </div>
 </div>
 
+<!-- Upload Contract -->
+<div class="modal-overlay" id="modal-upload-contract">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <div class="modal-title">⬆ Upload Contract for AI Extraction</div>
+      <button class="modal-close" onclick="closeUploadModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- API Key notice -->
+      <div class="api-key-notice" id="api-key-notice">
+        <span>🔑</span>
+        <div style="flex:1">
+          <strong style="display:block;margin-bottom:.2rem">Anthropic API Key Required</strong>
+          Claude AI reads your contract and extracts the key fields. Your key is stored locally only and never sent anywhere except Anthropic's API.
+          <div class="api-key-input-wrap">
+            <input type="password" id="api-key-input" placeholder="sk-ant-api03-…" oninput="checkApiKey()">
+            <button class="btn btn-sm btn-secondary" onclick="toggleKeyVisibility()">👁</button>
+            <button class="btn btn-sm btn-primary" onclick="saveApiKey()">Save</button>
+          </div>
+          <div style="margin-top:.3rem;font-size:.68rem;color:var(--text3)">Get your key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a> → API Keys</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Drop zone -->
+      <div id="upload-step-1">
+        <div class="upload-zone" id="upload-zone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+          <input type="file" id="contract-file-input" accept=".pdf,.doc,.docx,.txt" onchange="handleFileSelect(event)">
+          <span class="upload-icon">📄</span>
+          <div class="upload-title">Drop your contract here</div>
+          <div class="upload-sub">Supports PDF, Word (.docx), or plain text · Click to browse</div>
+        </div>
+        <div style="margin-top:.75rem;font-size:.75rem;color:var(--text3);text-align:center">
+          Your document is processed locally and via the Anthropic API only. It is never stored on any server.
+        </div>
+      </div>
+
+      <!-- Step 2: File selected, ready to extract -->
+      <div id="upload-step-2" style="display:none">
+        <div class="file-preview" id="file-preview-bar">
+          <span class="file-preview-icon">📄</span>
+          <div>
+            <div class="file-preview-name" id="file-preview-name">contract.pdf</div>
+            <div class="file-preview-size" id="file-preview-size">—</div>
+          </div>
+          <button class="btn btn-sm btn-ghost" onclick="resetUpload()">✕ Remove</button>
+        </div>
+        <div style="display:flex;justify-content:center">
+          <button class="btn btn-primary" onclick="extractFromContract()" id="extract-btn">
+            ✦ Extract with Claude AI
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: Extracting spinner -->
+      <div class="extract-state" id="upload-step-3">
+        <div class="extract-spinner"></div>
+        <div class="extract-label" id="extract-status-label">Reading document…</div>
+        <div class="extract-sub" id="extract-status-sub">Claude is analysing your contract</div>
+      </div>
+
+      <!-- Step 4: Results + pre-filled form -->
+      <div id="upload-step-4" style="display:none">
+        <div class="extracted-fields" id="extracted-summary"></div>
+        <div style="margin-bottom:.75rem;font-size:.82rem;color:var(--text2)">
+          Review and adjust the extracted fields below before saving:
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Partner *</label>
+            <select id="agr2-partner"></select>
+          </div>
+          <div class="form-group">
+            <label>Agreement Type</label>
+            <select id="agr2-type">
+              <option>Referral Agreement</option>
+              <option>Reseller Agreement</option>
+              <option>Technology Partnership</option>
+              <option>Agency Agreement</option>
+              <option>Affiliate Agreement</option>
+              <option>NDA</option>
+              <option>MSA</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Partner / Company Name (from doc)</label>
+            <input type="text" id="agr2-company" placeholder="Extracted from contract">
+          </div>
+          <div class="form-group">
+            <label>Signatory Name</label>
+            <input type="text" id="agr2-signatory" placeholder="Extracted from contract">
+          </div>
+          <div class="form-group">
+            <label>Signatory Title</label>
+            <input type="text" id="agr2-signatory-title" placeholder="e.g. CEO, VP Partnerships">
+          </div>
+          <div class="form-group">
+            <label>Date Signed</label>
+            <input type="date" id="agr2-signed">
+          </div>
+          <div class="form-group">
+            <label>Effective Date (Start) *</label>
+            <input type="date" id="agr2-start">
+          </div>
+          <div class="form-group">
+            <label>Expiry Date (End) *</label>
+            <input type="date" id="agr2-end">
+          </div>
+          <div class="form-group">
+            <label>Term / Duration</label>
+            <input type="text" id="agr2-duration" placeholder="e.g. 12 months, 2 years">
+          </div>
+          <div class="form-group">
+            <label>Closed Deal Fee %</label>
+            <input type="number" id="agr2-revpct" placeholder="e.g. 20" min="0" max="100">
+          </div>
+          <div class="form-group">
+            <label>Wingman Closed Deal Fee %</label>
+            <input type="number" id="agr2-wingman-revpct" placeholder="e.g. 10" min="0" max="100">
+          </div>
+          <div class="form-group">
+            <label>Auto-Renew</label>
+            <select id="agr2-autorenew">
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Governing Law / Jurisdiction</label>
+            <input type="text" id="agr2-jurisdiction" placeholder="e.g. England & Wales">
+          </div>
+          <div class="form-group">
+            <label>Partner Manager</label>
+            <input type="text" id="agr2-manager" placeholder="e.g. Sarah Jones">
+          </div>
+          <div class="form-group">
+            <label>Primary Contact Name</label>
+            <input type="text" id="agr2-contact-name" placeholder="e.g. Jane Smith">
+          </div>
+          <div class="form-group">
+            <label>Primary Contact Email</label>
+            <input type="email" id="agr2-contact-email" placeholder="e.g. jane@partner.com">
+          </div>
+          <div class="form-group span2">
+            <label>Key Terms &amp; Obligations (AI Summary)</label>
+            <textarea id="agr2-notes" rows="4" placeholder="AI-extracted summary of key terms…"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer" id="upload-modal-footer">
+      <button class="btn btn-secondary" onclick="closeUploadModal()">Cancel</button>
+      <button class="btn btn-primary" id="upload-save-btn" style="display:none" onclick="saveExtractedAgreement()">
+        ✓ Save Agreement
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Profile -->
+<div class="modal-overlay" id="modal-edit-profile">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Edit Profile</div>
+      <button class="modal-close" onclick="closeModal('modal-edit-profile')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;padding:1rem;background:var(--bg);border-radius:10px">
+        <div id="profile-avatar-preview" style="width:52px;height:52px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;color:#fff;flex-shrink:0">AJ</div>
+        <div>
+          <div id="profile-preview-name" style="font-size:.95rem;font-weight:700">Alex Johnson</div>
+          <div id="profile-preview-title" style="font-size:.78rem;color:var(--text3);margin-top:.1rem">Head of Partnerships</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="ep-name" placeholder="Alex Johnson" oninput="previewProfile()">
+        </div>
+        <div class="form-group">
+          <label>Job Title</label>
+          <input type="text" id="ep-title" placeholder="Head of Partnerships" oninput="previewProfile()">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="ep-email" placeholder="alex@company.com">
+        </div>
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input type="text" id="ep-phone" placeholder="+44 7700 000000">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-edit-profile')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProfile()">Save Profile</button>
+    </div>
+  </div>
+</div>
+
+<!-- Leads Quick Glance -->
+<div class="modal-overlay" id="modal-leads-glance">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="glance-title">Leads</div>
+      <button class="modal-close" onclick="closeModal('modal-leads-glance')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="glance-body"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-leads-glance')">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast Container -->
 <div id="toast"></div>
 
 <script>
+function showLeadsGlance(partnerId, filter, partnerName){
+  const allLeads=getLeads().filter(l=>l.partnerId===partnerId);
+  const labels={all:'All Leads',open:'Open Leads',won:'Closed Won'};
+  const filtered=filter==='all'?allLeads
+    :filter==='won'?allLeads.filter(l=>l.stage==='Closed Won')
+    :allLeads.filter(l=>!['Closed Won','Closed Lost'].includes(l.stage));
+
+  document.getElementById('glance-title').textContent=`${partnerName} — ${labels[filter]} (${filtered.length})`;
+
+  const stageColour={
+    'Referred':'var(--text3)','Contacted':'var(--blue)','Qualified':'var(--blue)',
+    'Proposal':'var(--yellow)','Negotiation':'var(--yellow)',
+    'Closed Won':'var(--green)','Closed Lost':'var(--red)'
+  };
+
+  document.getElementById('glance-body').innerHTML=filtered.length
+    ? filtered.map(l=>`
+        <div class="glance-lead-row">
+          <div style="flex:1;min-width:0">
+            <div class="glance-company">${l.company}</div>
+            <div class="glance-meta">${l.contact||'—'} ${l.email?`· <a href="mailto:${l.email}" style="color:var(--accent);text-decoration:none">${l.email}</a>`:''}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div class="glance-value">${fmtCcy(l.value)}</div>
+            <div style="font-size:.7rem;font-weight:600;color:${stageColour[l.stage]||'var(--text3)'};margin-top:.1rem">${l.stage}</div>
+          </div>
+        </div>`)
+      .join('')
+    : `<div class="empty-state"><div class="empty-icon">◻</div><div class="empty-title">No ${labels[filter].toLowerCase()} for this partner</div></div>`;
+
+  openModal('modal-leads-glance');
+}
+
+// ═══════════════════════════════════════════════════
+// USER PROFILE
+// ═══════════════════════════════════════════════════
+function getProfile(){
+  return DB.get('profile')||{name:'Alex Johnson',title:'Head of Partnerships',email:'',phone:''};
+}
+
+function applyProfile(){
+  const p=getProfile();
+  const av=initials(p.name||'U');
+  document.getElementById('profile-avatar').textContent=av;
+  document.getElementById('profile-name').textContent=p.name||'User';
+  document.getElementById('profile-title').textContent=p.title||'';
+}
+
+function openEditProfile(){
+  const p=getProfile();
+  document.getElementById('ep-name').value=p.name||'';
+  document.getElementById('ep-title').value=p.title||'';
+  document.getElementById('ep-email').value=p.email||'';
+  document.getElementById('ep-phone').value=p.phone||'';
+  previewProfile();
+  openModal('modal-edit-profile');
+}
+
+function previewProfile(){
+  const name=document.getElementById('ep-name').value||'User';
+  const title=document.getElementById('ep-title').value||'';
+  document.getElementById('profile-avatar-preview').textContent=initials(name);
+  document.getElementById('profile-preview-name').textContent=name;
+  document.getElementById('profile-preview-title').textContent=title;
+}
+
+function saveProfile(){
+  const name=document.getElementById('ep-name').value.trim();
+  if(!name){toast('Name is required','error');return;}
+  DB.set('profile',{
+    name,
+    title:document.getElementById('ep-title').value.trim(),
+    email:document.getElementById('ep-email').value.trim(),
+    phone:document.getElementById('ep-phone').value.trim(),
+  });
+  applyProfile();
+  closeModal('modal-edit-profile');
+  toast('Profile updated','success');
+}
+
+// ═══════════════════════════════════════════════════
+// SIDEBAR TOGGLE
+// ═══════════════════════════════════════════════════
+function toggleSidebar(){
+  const sidebar=document.getElementById('sidebar');
+  const main=document.getElementById('main');
+  const collapsed=sidebar.classList.toggle('collapsed');
+  main.classList.toggle('expanded',collapsed);
+  // Update all toggle buttons
+  document.querySelectorAll('.sidebar-toggle').forEach(btn=>{
+    btn.textContent=collapsed?'▶':'◀';
+  });
+}
+
 // ═══════════════════════════════════════════════════
 // DATA LAYER — localStorage persistence
 // ═══════════════════════════════════════════════════
@@ -1205,14 +1660,22 @@ function getPartnerById(id){return getPartners().find(p=>p.id===id)}
 // ═══════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════
-const fmt=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'-';
+const fmt=d=>{
+  if(!d) return '-';
+  const [y,mo,day]=d.split('-').map(Number);
+  if(!y) return '-';
+  return new Date(y,mo-1,day).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+};
 const fmtNum=n=>n===undefined||n===null?'—':Number(n).toLocaleString('en-GB');
 const fmtCcy=n=>n===undefined||n===null?'—':'£'+Number(n).toLocaleString('en-GB',{minimumFractionDigits:0});
 
 function daysUntil(dateStr){
   if(!dateStr) return null;
-  const diff=new Date(dateStr)-new Date();
-  return Math.ceil(diff/(1000*60*60*24));
+  // Parse as local date (not UTC) to avoid timezone off-by-one
+  const [y,m,d]=dateStr.split('-').map(Number);
+  const target=new Date(y,m-1,d);
+  const today=new Date(); today.setHours(0,0,0,0);
+  return Math.round((target-today)/(1000*60*60*24));
 }
 
 function agreementStatus(agr){
@@ -1285,7 +1748,10 @@ document.querySelectorAll('.nav-item').forEach(el=>{
 // MODAL SYSTEM
 // ═══════════════════════════════════════════════════
 function openModal(id){
-  if(id==='modal-add-agreement'||id==='modal-add-lead') populatePartnerSelects();
+  if(id==='modal-add-agreement'||id==='modal-add-lead') {
+    populatePartnerSelects();
+    if(id==='modal-add-lead') setTimeout(updateLeadFeeRate, 0);
+  }
   document.getElementById(id).classList.add('open');
 }
 function closeModal(id){
@@ -1314,6 +1780,29 @@ function toast(msg,type=''){
   el.innerHTML=`${type==='success'?'✓':type==='error'?'✕':'ℹ'} ${msg}`;
   d.appendChild(el);
   setTimeout(()=>el.remove(),3500);
+}
+
+function showConfirm(msg, onConfirm){
+  let el = document.getElementById('confirm-dialog');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'confirm-dialog';
+    el.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center';
+    document.body.appendChild(el);
+  }
+  el.innerHTML=`
+    <div style="background:var(--surface);border-radius:12px;padding:1.5rem;width:min(380px,90vw);box-shadow:0 8px 32px rgba(0,0,0,.3)">
+      <div style="font-size:.95rem;margin-bottom:1.25rem;line-height:1.5">${msg}</div>
+      <div style="display:flex;gap:.5rem;justify-content:flex-end">
+        <button class="btn btn-secondary" onclick="document.getElementById('confirm-dialog').style.display='none'">Cancel</button>
+        <button class="btn btn-danger" id="confirm-ok-btn">Delete</button>
+      </div>
+    </div>`;
+  el.style.display='flex';
+  document.getElementById('confirm-ok-btn').onclick=()=>{
+    el.style.display='none';
+    onConfirm();
+  };
 }
 
 // ═══════════════════════════════════════════════════
@@ -1436,7 +1925,9 @@ function renderDashboard(){
 function drawRevenueChart(){
   const ctx=document.getElementById('rev-chart');
   if(!ctx) return;
-  if(ctx._chart) ctx._chart.destroy();
+  // Clear canvas instead of destroy (custom canvas charts, no Chart.js)
+  const context=ctx.getContext('2d');
+  if(context) context.clearRect(0,0,ctx.width,ctx.height);
   const leads=getLeads().filter(l=>l.stage==='Closed Won');
   const months=['Sep','Oct','Nov','Dec','Jan','Feb'];
   const now=new Date();
@@ -1448,7 +1939,6 @@ function drawRevenueChart(){
     }).reduce((s,l)=>s+(Number(l.value)||0),0)||[22000,35000,41000,48000,62000,75000][i];
   });
   drawBarChart(ctx,months,data,'#d4500a');
-  ctx._chart=true;
 }
 
 function drawBarChart(canvas,labels,data,color){
@@ -1518,10 +2008,14 @@ function renderPartners(){
     const leads=getLeads();
     container.innerHTML=`<div class="cards-grid">${filtered.map(p=>{
       const agrs=agreements.filter(a=>a.partnerId===p.id);
-      const nextExpiry=agrs.map(a=>daysUntil(a.end)).filter(d=>d!==null&&d>=0).sort((a,b)=>a-b)[0];
       const closedRev=leads.filter(l=>l.partnerId===p.id&&l.stage==='Closed Won').reduce((s,l)=>s+(Number(l.value)||0),0);
-      const openCount=leads.filter(l=>l.partnerId===p.id&&!['Closed Won','Closed Lost'].includes(l.stage)).length;
+      const allLeads=leads.filter(l=>l.partnerId===p.id);
+      const openLeads=allLeads.filter(l=>!['Closed Won','Closed Lost'].includes(l.stage));
+      const wonLeads=allLeads.filter(l=>l.stage==='Closed Won');
+      const openCount=openLeads.length;
       const col=p.color||avatarColor(p.name);
+      const {rate:closedRate, source:closedSrc}=getFeeRateForPartner(p.id,'closed');
+      const {rate:wingmanRate, source:wingmanSrc}=getFeeRateForPartner(p.id,'wingman');
       return `<div class="partner-card" onclick="openPartnerDetail('${p.id}')">
         <div class="card-header">
           <div style="display:flex;align-items:center;gap:.75rem;flex:1">
@@ -1538,23 +2032,69 @@ function renderPartners(){
           ${p.hsid?`<span style="margin-left:auto" class="hs-badge hs-synced">🔗 HS</span>`:''}
         </div>
         <div class="card-stats">
-          <div><div class="card-stat-label">Rev Share</div><div class="card-stat-value">${p.revshare||0}%</div></div>
+          <div><div class="card-stat-label">Closed Fee${closedSrc==='agreement'?` <span style="color:var(--accent);font-size:.6rem">agr</span>`:''}:</div><div class="card-stat-value">${closedRate||0}%</div></div>
+          <div><div class="card-stat-label">Wingman Fee${wingmanSrc==='agreement'?` <span style="color:var(--accent);font-size:.6rem">agr</span>`:''}:</div><div class="card-stat-value">${wingmanRate||0}%</div></div>
           <div><div class="card-stat-label">Closed Rev</div><div class="card-stat-value" style="font-size:.78rem">${fmtCcy(closedRev)}</div></div>
-          <div><div class="card-stat-label">Open Leads</div><div class="card-stat-value">${openCount}</div></div>
         </div>
-        ${nextExpiry!==undefined?`<div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border);font-size:.73rem;color:${nextExpiry<=30?'var(--red)':'var(--text3)'}">
-          ${nextExpiry<=30?'⚠':'◷'} Agreement expires in ${nextExpiry} days
-        </div>`:''}
+        <div class="lead-strip">
+          <div class="lead-strip-btn ls-total" onclick="event.stopPropagation();showLeadsGlance('${p.id}','all','${p.name}')">
+            <div class="ls-count">${allLeads.length}</div>
+            <div class="ls-label">Total Leads</div>
+          </div>
+          <div class="lead-strip-btn ls-open" onclick="event.stopPropagation();showLeadsGlance('${p.id}','open','${p.name}')">
+            <div class="ls-count">${openCount}</div>
+            <div class="ls-label">Open</div>
+          </div>
+          <div class="lead-strip-btn ls-won" onclick="event.stopPropagation();showLeadsGlance('${p.id}','won','${p.name}')">
+            <div class="ls-count">${wonLeads.length}</div>
+            <div class="ls-label">Closed Won</div>
+          </div>
+        </div>
+        ${(()=>{
+          const activeAgrs=agrs
+            .map(a=>({...a,days:daysUntil(a.end)}))
+            .filter(a=>a.days!==null&&a.days>=0)
+            .sort((a,b)=>a.days-b.days);
+          if(!activeAgrs.length) return '';
+          return `<div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border)">
+            ${activeAgrs.map(a=>`
+              <div id="agr-row-${a.id}" style="border-radius:7px;overflow:hidden;margin-bottom:.3rem;border:1px solid var(--border)">
+                <div style="display:flex;align-items:center;gap:.5rem;padding:.35rem .5rem;background:var(--bg);cursor:default">
+                  <span style="font-size:.72rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:${a.days<=14?'var(--red)':a.days<=30?'var(--yellow)':'var(--text2)'};font-weight:500">${a.days<=30?'⚠ ':'◷ '}${a.type}</span>
+                  <span style="font-size:.72rem;font-weight:700;font-family:var(--mono);color:${a.days<=14?'var(--red)':a.days<=30?'var(--yellow)':'var(--text3)'};flex-shrink:0">${a.days}d</span>
+                  <button onclick="event.stopPropagation();toggleAgrPanel('${a.id}')" style="background:none;border:1px solid var(--border2);border-radius:5px;padding:.1rem .35rem;font-size:.68rem;color:var(--text3);cursor:pointer;flex-shrink:0;line-height:1.4" title="Edit / Delete">✏</button>
+                </div>
+                <div id="agr-panel-${a.id}" style="display:none;padding:.5rem .6rem;background:var(--surface);border-top:1px solid var(--border)">
+                  <div style="font-size:.72rem;color:var(--text3);margin-bottom:.4rem;display:grid;grid-template-columns:1fr 1fr;gap:.2rem .6rem">
+                    <span>Start: <strong>${fmt(a.start)}</strong></span>
+                    <span>End: <strong>${fmt(a.end)}</strong></span>
+                    <span>Closed Fee: <strong>${a.revpct||0}%</strong></span>
+                    <span>Wingman Fee: <strong>${a.wingmanRevpct||0}%</strong></span>
+                    <span>Auto-renew: <strong>${a.autorenew==='yes'?'Yes':'No'}</strong></span>
+                    <span>Notice: <strong>${a.notice||'—'}d</strong></span>
+                  </div>
+                  <div style="display:flex;gap:.4rem;margin-top:.35rem">
+                    <button onclick="event.stopPropagation();editAgreementFromDetail('${a.id}')" class="btn btn-sm btn-secondary" style="flex:1;font-size:.72rem">✏ Edit</button>
+                    <button onclick="event.stopPropagation();deleteAgreementFromDetail('${a.id}','${p.id}')" class="btn btn-sm" style="flex:1;font-size:.72rem;background:var(--red);color:#fff;border-color:var(--red)">✕ Delete</button>
+                  </div>
+                </div>
+              </div>`).join('')}
+          </div>`;
+        })()}
       </div>`;
     }).join('')}</div>`;
   } else {
     const leads=getLeads();
     container.innerHTML=`<div class="table-wrap"><table class="data-table">
-      <thead><tr><th>Partner</th><th>Type</th><th>Contact</th><th>Region</th><th>Status</th><th>Rev Share</th><th>Closed Rev</th><th>Open Leads</th><th>HubSpot</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Partner</th><th>Type</th><th>Contact</th><th>Region</th><th>Status</th><th>Closed Fee</th><th>Wingman Fee</th><th>Closed Rev</th><th>Total Leads</th><th>Open</th><th>Closed Won</th><th>HubSpot</th><th>Actions</th></tr></thead>
       <tbody>${filtered.map(p=>{
-        const closedRev=leads.filter(l=>l.partnerId===p.id&&l.stage==='Closed Won').reduce((s,l)=>s+(Number(l.value)||0),0);
-        const openCount=leads.filter(l=>l.partnerId===p.id&&!['Closed Won','Closed Lost'].includes(l.stage)).length;
+        const pLeads=leads.filter(l=>l.partnerId===p.id);
+        const closedRev=pLeads.filter(l=>l.stage==='Closed Won').reduce((s,l)=>s+(Number(l.value)||0),0);
+        const openCount=pLeads.filter(l=>!['Closed Won','Closed Lost'].includes(l.stage)).length;
+        const wonCount=pLeads.filter(l=>l.stage==='Closed Won').length;
         const col=p.color||avatarColor(p.name);
+        const {rate:closedRate,source:closedSrc}=getFeeRateForPartner(p.id,'closed');
+        const {rate:wingmanRate,source:wingmanSrc}=getFeeRateForPartner(p.id,'wingman');
         return `<tr>
           <td><div style="display:flex;align-items:center;gap:.6rem">
             <div style="width:28px;height:28px;border-radius:7px;background:${col};display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0">${initials(p.name)}</div>
@@ -1564,9 +2104,12 @@ function renderPartners(){
           <td style="font-size:.8rem">${p.contact||'—'}</td>
           <td style="font-size:.8rem;color:var(--text3)">${p.region||'—'}</td>
           <td>${statusBadge(p.status)}</td>
-          <td class="mono">${p.revshare||0}%</td>
+          <td class="mono"><div>${closedRate||0}%</div><div style="font-size:.68rem;color:${closedSrc==='agreement'?'var(--accent)':'var(--text3)'}">${closedSrc==='agreement'?'from agreement':'default'}</div></td>
+          <td class="mono"><div>${wingmanRate||0}%</div><div style="font-size:.68rem;color:${wingmanSrc==='agreement'?'var(--accent)':'var(--text3)'}">${wingmanSrc==='agreement'?'from agreement':'default'}</div></td>
           <td class="mono">${fmtCcy(closedRev)}</td>
-          <td style="text-align:center">${openCount}</td>
+          <td style="text-align:center"><button class="btn btn-sm btn-ghost" onclick="showLeadsGlance('${p.id}','all','${p.name}')">${pLeads.length}</button></td>
+          <td style="text-align:center"><button class="btn btn-sm btn-ghost" style="color:var(--blue)" onclick="showLeadsGlance('${p.id}','open','${p.name}')">${openCount}</button></td>
+          <td style="text-align:center"><button class="btn btn-sm btn-ghost" style="color:var(--green)" onclick="showLeadsGlance('${p.id}','won','${p.name}')">${wonCount}</button></td>
           <td>${p.hsid?`<span class="hs-badge hs-synced">🔗 ${p.hsid}</span>`:`<span class="hs-badge hs-not-synced">Not linked</span>`}</td>
           <td><button class="btn btn-sm btn-ghost" onclick="openPartnerDetail('${p.id}')">View</button></td>
         </tr>`;
@@ -1590,6 +2133,8 @@ function savePartner(){
     region:document.getElementById('p-region').value,
     status:document.getElementById('p-status').value,
     revshare:Number(document.getElementById('p-revshare').value)||0,
+    wingmanRevshare:Number(document.getElementById('p-wingman-revshare').value)||0,
+    manager:document.getElementById('p-manager').value,
     hsid:document.getElementById('p-hsid').value,
     notes:document.getElementById('p-notes').value,
     color:avatarColor(name),
@@ -1604,7 +2149,7 @@ function savePartner(){
   }
   DB.set('partners',partners);
   closeModal('modal-add-partner');
-  ['p-name','p-contact','p-email','p-phone','p-website','p-region','p-revshare','p-hsid','p-notes'].forEach(id=>document.getElementById(id).value='');
+  ['p-name','p-contact','p-email','p-phone','p-website','p-region','p-revshare','p-wingman-revshare','p-manager','p-hsid','p-notes'].forEach(id=>document.getElementById(id).value='');
   toast(editId?'Partner updated':'Partner added','success');
   renderPartners();
   renderDashboard();
@@ -1638,7 +2183,9 @@ function openPartnerDetail(id){
       <div class="detail-item"><div class="detail-label">Email</div><div class="detail-value"><a href="mailto:${p.email}" style="color:var(--accent)">${p.email||'—'}</a></div></div>
       <div class="detail-item"><div class="detail-label">Phone</div><div class="detail-value">${p.phone||'—'}</div></div>
       <div class="detail-item"><div class="detail-label">Website</div><div class="detail-value">${p.website?`<a href="https://${p.website}" target="_blank" style="color:var(--accent)">${p.website}</a>`:'—'}</div></div>
-      <div class="detail-item"><div class="detail-label">Default Rev Share</div><div class="detail-value">${p.revshare||0}%</div></div>
+      <div class="detail-item"><div class="detail-label">Closed Deal Fee</div><div class="detail-value">${(()=>{const {rate,source}=getFeeRateForPartner(p.id,'closed');return `${rate||0}% <span style="font-size:.7rem;color:${source==='agreement'?'var(--accent)':'var(--text3)'}">(${source||'default'})</span>`;})()} </div></div>
+      <div class="detail-item"><div class="detail-label">Wingman Closed Deal Fee</div><div class="detail-value">${(()=>{const {rate,source}=getFeeRateForPartner(p.id,'wingman');return `${rate||0}% <span style="font-size:.7rem;color:${source==='agreement'?'var(--accent)':'var(--text3)'}">(${source||'default'})</span>`;})()} </div></div>
+      <div class="detail-item"><div class="detail-label">Partner Manager</div><div class="detail-value">${p.manager||'—'}</div></div>
       <div class="detail-item"><div class="detail-label">Partner Since</div><div class="detail-value">${fmt(p.created)}</div></div>
       <div class="detail-item"><div class="detail-label">HubSpot ID</div><div class="detail-value">${p.hsid||'—'}</div></div>
       <div class="detail-item"><div class="detail-label">Total Closed Revenue</div><div class="detail-value" style="font-weight:700;color:var(--green)">${fmtCcy(closedRev)}</div></div>
@@ -1648,18 +2195,30 @@ function openPartnerDetail(id){
   `;
 
   // Agreements tab
-  document.getElementById('detail-tab-agreements').innerHTML=agreements.length?`
-    <table class="data-table" style="margin-top:.5rem">
-      <thead><tr><th>Type</th><th>Start</th><th>End</th><th>Days Left</th><th>Auto-Renew</th><th>Status</th></tr></thead>
+  document.getElementById('detail-tab-agreements').innerHTML=`
+    ${agreements.length?`
+    <table class="data-table" style="margin-top:.25rem">
+      <thead><tr><th>Type</th><th>Start</th><th>End</th><th>Days Left</th><th>Closed Fee</th><th>Wingman Fee</th><th>Auto-Renew</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody>${agreements.map(a=>{
         const days=daysUntil(a.end);const st=agreementStatus(a);
-        return `<tr><td><strong>${a.type}</strong><br><small style="color:var(--text3)">${a.revpct>0?a.revpct+'% rev share':''}</small></td>
-        <td class="mono">${fmt(a.start)}</td><td class="mono">${fmt(a.end)}</td>
-        <td class="mono" style="color:${days!==null&&days<30?'var(--red)':'var(--text)'}">${days!==null?days+'d':'—'}</td>
-        <td>${a.autorenew==='yes'?'<span class="badge badge-green">Yes</span>':'<span class="badge badge-grey">No</span>'}</td>
-        <td>${statusBadge(st)}</td></tr>`;
+        return `<tr>
+          <td><strong style="font-size:.82rem">${a.type}</strong>${a.signatory?`<br><small style="color:var(--text3)">Signed: ${a.signatory}</small>`:''}</td>
+          <td class="mono">${fmt(a.start)}</td>
+          <td class="mono">${fmt(a.end)}</td>
+          <td class="mono" style="color:${days!==null&&days<=14?'var(--red)':days!==null&&days<=30?'var(--yellow)':'var(--text)'};font-weight:${days!==null&&days<=30?700:400}">${days!==null?days+'d':'—'}</td>
+          <td class="mono">${a.revpct>0?a.revpct+'%':'—'}</td>
+          <td class="mono">${a.wingmanRevpct>0?a.wingmanRevpct+'%':'—'}</td>
+          <td>${a.autorenew==='yes'?'<span class="badge badge-green">Yes</span>':'<span class="badge badge-grey">No</span>'}</td>
+          <td>${statusBadge(st)}</td>
+          <td style="display:flex;gap:.3rem">
+            ${a.sourceFileData?`<button class="btn btn-sm btn-ghost" title="View contract" onclick="viewAgreementFile('${a.id}')">📄</button>`:''}
+            <button class="btn btn-sm btn-ghost" onclick="editAgreementFromDetail('${a.id}')">✏</button>
+            <button class="btn btn-sm btn-ghost" style="color:var(--red)" onclick="deleteAgreementFromDetail('${a.id}','${p.id}')">✕</button>
+          </td>
+        </tr>`;
       }).join('')}</tbody>
-    </table>`:`<div class="empty-state"><div class="empty-icon">◻</div><div class="empty-title">No agreements yet</div></div>`;
+    </table>`:`<div class="empty-state"><div class="empty-icon">◻</div><div class="empty-title">No agreements yet</div></div>`}
+  `;
 
   // Leads tab
   document.getElementById('detail-tab-leads').innerHTML=leads.length?`
@@ -1710,6 +2269,8 @@ function editPartner(id){
   document.getElementById('p-region').value=p.region||'';
   document.getElementById('p-status').value=p.status;
   document.getElementById('p-revshare').value=p.revshare||'';
+  document.getElementById('p-wingman-revshare').value=p.wingmanRevshare||'';
+  document.getElementById('p-manager').value=p.manager||'';
   document.getElementById('p-hsid').value=p.hsid||'';
   document.getElementById('p-notes').value=p.notes||'';
   document.getElementById('modal-add-partner').dataset.editId=id;
@@ -1720,6 +2281,36 @@ function editPartner(id){
 // ═══════════════════════════════════════════════════
 // AGREEMENTS
 // ═══════════════════════════════════════════════════
+function fixUnlinkedAgreement(agrId){
+  const agreements = getAgreements();
+  const a = agreements.find(x=>x.id===agrId);
+  if(!a || !a.partnerCompany) return;
+  const newPartner = {
+    id: genId(),
+    name: a.partnerCompany,
+    type: 'Technology',
+    contact: a.primaryContact || '',
+    email: a.primaryContactEmail || '',
+    manager: a.manager || '',
+    status: 'Active',
+    createdAt: new Date().toISOString(),
+  };
+  const partners = getPartners();
+  partners.push(newPartner);
+  DB.set('partners', partners);
+  // Link the agreement and any others with same company name
+  const updated = agreements.map(x =>
+    x.partnerCompany === a.partnerCompany && !x.partnerId
+      ? {...x, partnerId: newPartner.id}
+      : x
+  );
+  DB.set('agreements', updated);
+  toast(`Partner "${newPartner.name}" created and linked ✓`, 'success');
+  renderAgreements();
+  renderPartners();
+  renderDashboard();
+}
+
 function renderAgreements(){
   const agreements=getAgreements();
   const q=(document.getElementById('agr-search')||{}).value?.toLowerCase()||'';
@@ -1728,13 +2319,14 @@ function renderAgreements(){
 
   // populate partner filter
   const sel=document.getElementById('agr-filter-partner');
-  if(sel.options.length<=1){
-    getPartners().forEach(p=>{
-      const o=document.createElement('option');
-      o.value=p.id;o.textContent=p.name;
-      sel.appendChild(o);
-    });
-  }
+  const prevVal=sel.value;
+  sel.innerHTML='<option value="">All Partners</option>';
+  getPartners().forEach(p=>{
+    const o=document.createElement('option');
+    o.value=p.id;o.textContent=p.name;
+    sel.appendChild(o);
+  });
+  if(prevVal) sel.value=prevVal;
 
   const expiring=agreements.filter(a=>{const s=agreementStatus(a);return s==='Expiring Soon';});
   const expired=agreements.filter(a=>agreementStatus(a)==='Expired');
@@ -1771,23 +2363,33 @@ function renderAgreements(){
     const col=p?.color||avatarColor(p?.name||'');
     return `<tr>
       <td><div style="display:flex;align-items:center;gap:.6rem">
-        <div style="width:24px;height:24px;border-radius:6px;background:${col};display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff">${p?initials(p.name):'?'}</div>
-        <span style="font-weight:600;font-size:.82rem">${p?p.name:'Unknown'}</span>
+        <div style="width:24px;height:24px;border-radius:6px;background:${col};display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff">${p?initials(p.name):a.partnerCompany?initials(a.partnerCompany):'?'}</div>
+        ${p
+          ? `<span style="font-weight:600;font-size:.82rem">${p.name}</span>`
+          : `<span style="font-weight:600;font-size:.82rem;color:var(--text2)">${a.partnerCompany||'Unknown'}</span>
+             ${a.partnerCompany?`<button class="btn btn-sm btn-ghost" style="font-size:.68rem;padding:.15rem .4rem;color:var(--accent)" onclick="fixUnlinkedAgreement('${a.id}')">+ Create Partner</button>`:''}`
+        }
       </div></td>
+      <td>${p?`<span class="tag">${p.type}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+      <td class="wrap" style="font-size:.78rem;min-width:130px">${p&&p.contact?`<div style="font-weight:500;white-space:nowrap">${p.contact}</div><div style="margin-top:.1rem"><a href="mailto:${p.email||''}" style="color:var(--accent);font-size:.7rem;text-decoration:none;white-space:nowrap">${p.email||'<span style="color:var(--text3)">No email</span>'}</a></div>`:'<span style="color:var(--text3)">—</span>'}</td>
       <td style="font-size:.82rem">${a.type}</td>
       <td class="mono">${fmt(a.start)}</td>
       <td class="mono">${fmt(a.end)}</td>
       <td><span class="tag">${dur}</span></td>
       <td>${days===null?'—':days<0?`<span style="color:var(--red);font-weight:700">${Math.abs(days)}d ago</span>`:`<div style="display:flex;align-items:center;gap:.5rem">
-        <span style="font-family:var(--mono);font-size:.78rem;color:${days<=14?'var(--red)':days<=30?'var(--yellow)':'var(--text)'};font-weight:${days<=30?700:400}">${days}d</span>
+        <span style="font-family:var(--mono);font-size:.78rem;font-weight:${days<=30?700:400};color:${days<=14?'var(--red)':days<=30?'var(--yellow)':'var(--text)'}">${days}d</span>
         <div class="progress-wrap" style="width:60px"><div class="progress-bar ${days<=14?'danger':days<=30?'warn':''}" style="width:${prog}%"></div></div>
       </div>`}</td>
+      <td class="mono" style="text-align:center">${a.revpct>0?'<span class="badge badge-green">'+a.revpct+'%</span>':`<span style="color:var(--text3)">—</span>`}</td>
+      <td class="mono" style="text-align:center">${a.wingmanRevpct>0?'<span class="badge badge-blue">'+a.wingmanRevpct+'%</span>':`<span style="color:var(--text3)">—</span>`}</td>
+      <td class="wrap" style="font-size:.78rem;min-width:110px">${a.signatory?`<div style="font-weight:500;white-space:nowrap">${a.signatory}</div><div style="font-size:.7rem;color:var(--text3);white-space:nowrap">${a.signatoryTitle||''}</div>`:'<span style="color:var(--text3)">—</span>'}</td>
+      <td style="font-size:.78rem">${a.manager||'<span style="color:var(--text3)">—</span>'}</td>
       <td>${a.autorenew==='yes'?'<span class="badge badge-green">Yes</span>':'<span class="badge badge-grey">No</span>'}</td>
-      <td>${statusBadge(st)}</td>
-      <td style="display:flex;gap:.3rem">
+      <td class="wrap"><div style="display:flex;flex-direction:column;gap:.25rem;align-items:flex-start">${a.sourceFile?`<span class="badge badge-blue" title="${a.sourceFile}">📄 AI</span>`:''} ${statusBadge(st)}</div></td>
+      <td><div style="display:flex;gap:.3rem;align-items:center">
         <button class="btn btn-sm btn-ghost" onclick="editAgreement('${a.id}')">✏</button>
         <button class="btn btn-sm btn-ghost" onclick="renewAgreement('${a.id}')" title="Mark for renewal">↺</button>
-      </td>
+      </div></td>
     </tr>`;
   }).join('');
 }
@@ -1797,12 +2399,32 @@ function saveAgreement(){
   const start=document.getElementById('agr-start').value;
   const end=document.getElementById('agr-end').value;
   if(!pid||!start||!end){toast('Please fill required fields','error');return;}
+
+  // Save partner name edits if panel is open
+  const nameWrap=document.getElementById('agr-partner-name-wrap');
+  const nameEditing=nameWrap&&nameWrap.style.display!=='none';
+  if(nameEditing){
+    const newName=document.getElementById('agr-partner-name').value.trim();
+    if(!newName){toast('Partner name cannot be empty','error');return;}
+    const partners=getPartners();
+    const pIdx=partners.findIndex(p=>p.id===pid);
+    if(pIdx>=0){
+      partners[pIdx].name=newName;
+      partners[pIdx].type=document.getElementById('agr-partner-type').value;
+      partners[pIdx].contact=document.getElementById('agr-partner-contact').value;
+      partners[pIdx].email=document.getElementById('agr-partner-email').value;
+      DB.set('partners',partners);
+    }
+  }
+
   const agreements=getAgreements();
   const newA={
     id:genId(),partnerId:pid,
     type:document.getElementById('agr-type').value,
     start,end,
     revpct:Number(document.getElementById('agr-revpct').value)||0,
+    wingmanRevpct:Number(document.getElementById('agr-wingman-revpct').value)||0,
+    manager:document.getElementById('agr-manager').value,
     autorenew:document.getElementById('agr-autorenew').value,
     notice:Number(document.getElementById('agr-notice').value)||30,
     status:document.getElementById('agr-status').value,
@@ -1811,9 +2433,113 @@ function saveAgreement(){
   agreements.push(newA);
   DB.set('agreements',agreements);
   closeModal('modal-add-agreement');
+  // Reset partner name edit panel
+  if(nameWrap) nameWrap.style.display='none';
+  const editBtn=document.getElementById('agr-edit-name-btn');
+  if(editBtn){editBtn.textContent='✏ Edit Name';editBtn.className='btn btn-sm btn-secondary';}
   toast('Agreement saved','success');
   renderAgreements();
+  renderPartners();
   renderDashboard();
+}
+
+function toggleAgrPanel(agrId){
+  const panel=document.getElementById('agr-panel-'+agrId);
+  if(!panel) return;
+  const open=panel.style.display==='none';
+  // Close all other panels first
+  document.querySelectorAll('[id^="agr-panel-"]').forEach(p=>p.style.display='none');
+  panel.style.display=open?'block':'none';
+}
+
+function editAgreementFromDetail(id){
+  // Close partner detail, open edit agreement — re-open detail after save is handled by updateAgreement refresh
+  closeModal('modal-partner-detail');
+  editAgreement(id);
+}
+
+function viewAgreementFile(agrId){
+  const a = getAgreements().find(x=>x.id===agrId);
+  if(!a||!a.sourceFileData){ toast('No file attached to this agreement','error'); return; }
+
+  // Build or reuse modal
+  let modal = document.getElementById('contract-view-modal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id = 'contract-view-modal';
+    modal.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:1rem';
+    modal.innerHTML=`
+      <div style="background:var(--surface);border-radius:12px;width:min(860px,95vw);height:92vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.4)">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0">
+          <span id="cv-title" style="font-weight:600;font-size:.95rem"></span>
+          <div style="display:flex;gap:.4rem;align-items:center">
+            <button class="btn btn-sm btn-secondary" onclick="cvPrevPage()">‹ Prev</button>
+            <span id="cv-page-info" style="font-size:.8rem;color:var(--text2);min-width:60px;text-align:center"></span>
+            <button class="btn btn-sm btn-secondary" onclick="cvNextPage()">Next ›</button>
+            <button class="btn btn-sm btn-ghost" onclick="document.getElementById('contract-view-modal').style.display='none'" style="margin-left:.5rem">✕</button>
+          </div>
+        </div>
+        <div id="cv-canvas-wrap" style="flex:1;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:1rem;background:#f0f0f0">
+          <canvas id="cv-canvas" style="box-shadow:0 2px 12px rgba(0,0,0,.2);max-width:100%"></canvas>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+
+  document.getElementById('cv-title').textContent = a.sourceFile || 'Contract';
+  modal.style.display='flex';
+  renderPdfModal(a.sourceFileData);
+}
+
+let _cvPdf = null, _cvPage = 1;
+
+async function renderPdfModal(dataUrl){
+  document.getElementById('cv-page-info').textContent = 'Loading…';
+  if(!window.pdfjsLib){
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  const b64 = dataUrl.split(',')[1];
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for(let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
+  _cvPdf = await window.pdfjsLib.getDocument({data: bytes}).promise;
+  _cvPage = 1;
+  cvRenderPage();
+}
+
+async function cvRenderPage(){
+  if(!_cvPdf) return;
+  const page = await _cvPdf.getPage(_cvPage);
+  const scale = Math.min(2, (window.innerWidth * 0.8) / page.getViewport({scale:1}).width);
+  const vp = page.getViewport({scale});
+  const canvas = document.getElementById('cv-canvas');
+  canvas.width = vp.width; canvas.height = vp.height;
+  await page.render({canvasContext: canvas.getContext('2d'), viewport: vp}).promise;
+  document.getElementById('cv-page-info').textContent = `${_cvPage} / ${_cvPdf.numPages}`;
+}
+
+function cvPrevPage(){ if(_cvPage>1){_cvPage--;cvRenderPage();} }
+function cvNextPage(){ if(_cvPdf&&_cvPage<_cvPdf.numPages){_cvPage++;cvRenderPage();} }
+
+function downloadAgreementFile(a){
+  const link = document.createElement('a');
+  link.href = a.sourceFileData;
+  link.download = a.sourceFile || 'contract.pdf';
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
+  setTimeout(() => document.body.removeChild(link), 1000);
+}
+
+function deleteAgreementFromDetail(agrId, partnerId){
+  showConfirm('Delete this agreement? This cannot be undone.', ()=>{
+    DB.set('agreements', getAgreements().filter(a=>a.id!==agrId));
+    toast('Agreement deleted','success');
+    renderAgreements();
+    renderDashboard();
+    openPartnerDetail(partnerId);
+  });
 }
 
 function editAgreement(id){
@@ -1822,54 +2548,225 @@ function editAgreement(id){
   if(!a) return;
   currentEditId=id;
   const partners=getPartners();
+  const currentPartner=partners.find(p=>p.id===a.partnerId);
   document.getElementById('edit-agr-body').innerHTML=`
     <div class="form-grid">
-      <div class="form-group">
+      <div class="form-group span2">
         <label>Partner</label>
-        <select id="ea-partner">${partners.map(p=>`<option value="${p.id}" ${p.id===a.partnerId?'selected':''}>${p.name}</option>`).join('')}</select>
+        <div style="display:flex;gap:.5rem;align-items:flex-start">
+          <select id="ea-partner" style="flex:1" onchange="togglePartnerNameEdit()">${partners.map(p=>`<option value="${p.id}" ${p.id===a.partnerId?'selected':''}>${p.name}</option>`).join('')}</select>
+          <button type="button" class="btn btn-sm btn-secondary" onclick="togglePartnerNameEdit()" title="Edit partner name" id="ea-edit-name-btn">✏ Edit Name</button>
+        </div>
+        <div id="ea-partner-name-wrap" style="display:none;margin-top:.5rem;background:var(--accent-light);border:1px solid var(--accent-border);border-radius:8px;padding:.75rem">
+          <div style="font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">✏ Editing partner name</div>
+          <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:.6rem">
+            <div class="form-group">
+              <label>Partner Name</label>
+              <input type="text" id="ea-partner-name" placeholder="Company name">
+            </div>
+            <div class="form-group">
+              <label>Partner Type</label>
+              <select id="ea-partner-type">
+                <option>Technology</option><option>Consultant</option><option>Agency</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Primary Contact</label>
+              <input type="text" id="ea-partner-contact" placeholder="Jane Smith">
+            </div>
+            <div class="form-group">
+              <label>Contact Email</label>
+              <input type="email" id="ea-partner-email" placeholder="jane@company.com">
+            </div>
+          </div>
+          <div style="margin-top:.5rem;font-size:.72rem;color:var(--text3)">Changes will update the partner record across the entire app.</div>
+        </div>
       </div>
       <div class="form-group">
         <label>Agreement Type</label>
         <select id="ea-type">${['Referral Agreement','Reseller Agreement','Technology Partnership','Agency Agreement','Affiliate Agreement','NDA','MSA'].map(t=>`<option ${t===a.type?'selected':''}>${t}</option>`).join('')}</select>
       </div>
+      <div class="form-group"><label>Status</label><select id="ea-status">${['Active','Draft','Pending Renewal','Expiring Soon','Expired'].map(s=>`<option ${s===a.status?'selected':''}>${s}</option>`).join('')}</select></div>
       <div class="form-group"><label>Start Date</label><input type="date" id="ea-start" value="${a.start}"></div>
       <div class="form-group"><label>End Date</label><input type="date" id="ea-end" value="${a.end}"></div>
-      <div class="form-group"><label>Rev Share %</label><input type="number" id="ea-revpct" value="${a.revpct}"></div>
+      <div class="form-group">
+        <label>Closed Deal Fee %</label>
+        <input type="number" id="ea-revpct" value="${a.revpct||''}" placeholder="e.g. 20" min="0" max="100">
+        <div class="input-hint">Rev share on deals closed directly by the partner</div>
+      </div>
+      <div class="form-group">
+        <label>Wingman Closed Deal Fee %</label>
+        <input type="number" id="ea-wingman-revpct" value="${a.wingmanRevpct||''}" placeholder="e.g. 10" min="0" max="100">
+        <div class="input-hint">Rev share where partner assisted but did not close</div>
+      </div>
       <div class="form-group"><label>Auto-Renew</label><select id="ea-autorenew"><option value="yes" ${a.autorenew==='yes'?'selected':''}>Yes</option><option value="no" ${a.autorenew==='no'?'selected':''}>No</option></select></div>
-      <div class="form-group"><label>Status</label><select id="ea-status">${['Active','Draft','Pending Renewal','Expiring Soon','Expired'].map(s=>`<option ${s===a.status?'selected':''}>${s}</option>`).join('')}</select></div>
-      <div class="form-group"><label>Notice Period (days)</label><input type="number" id="ea-notice" value="${a.notice}"></div>
+      <div class="form-group"><label>Notice Period (days)</label><input type="number" id="ea-notice" value="${a.notice||30}"></div>
+      <div class="form-group"><label>Jurisdiction</label><input type="text" id="ea-jurisdiction" value="${a.jurisdiction||''}"></div>
+      <div class="form-group"><label>Partner Manager</label><input type="text" id="ea-manager" value="${a.manager||''}"></div>
       <div class="form-group span2"><label>Notes</label><textarea id="ea-notes">${a.notes||''}</textarea></div>
+      <div class="form-group span2">
+        <label>Contract File</label>
+        <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
+          ${a.sourceFileData
+            ? `<span style="font-size:.8rem;color:var(--text2)">📄 ${a.sourceFile||'Attached'}</span>
+               <button type="button" class="btn btn-sm btn-ghost" onclick="viewAgreementFile('${a.id}')">⬇ Download</button>
+               <label class="btn btn-sm btn-secondary" style="cursor:pointer;margin:0">↺ Replace<input type="file" accept=".pdf,.docx,.doc,.txt" style="display:none" onchange="attachFileToEdit(this)"></label>`
+            : `<span style="font-size:.8rem;color:var(--text3)">No file attached</span>
+               <label class="btn btn-sm btn-secondary" style="cursor:pointer;margin:0">📎 Attach File<input type="file" accept=".pdf,.docx,.doc,.txt" style="display:none" onchange="attachFileToEdit(this)"></label>`
+          }
+          <span id="ea-file-status" style="font-size:.78rem;color:var(--green)"></span>
+        </div>
+      </div>
     </div>`;
+
+  // Pre-fill partner name fields with current partner data
+  if(currentPartner){
+    document.getElementById('ea-partner-name').value=currentPartner.name;
+    document.getElementById('ea-partner-type').value=currentPartner.type||'Reseller';
+    document.getElementById('ea-partner-contact').value=currentPartner.contact||'';
+    document.getElementById('ea-partner-email').value=currentPartner.email||'';
+  }
   openModal('modal-edit-agreement');
+}
+
+function toggleNewAgrPartnerEdit(){
+  const wrap=document.getElementById('agr-partner-name-wrap');
+  const btn=document.getElementById('agr-edit-name-btn');
+  const partnerId=document.getElementById('agr-partner').value;
+  const partners=getPartners();
+  const p=partners.find(x=>x.id===partnerId);
+  const isOpen=wrap.style.display!=='none';
+  if(isOpen){
+    wrap.style.display='none';
+    btn.textContent='✏ Edit Name';
+    btn.className='btn btn-sm btn-secondary';
+  } else {
+    wrap.style.display='block';
+    btn.textContent='✕ Cancel Edit';
+    btn.className='btn btn-sm btn-ghost';
+    if(p){
+      document.getElementById('agr-partner-name').value=p.name;
+      document.getElementById('agr-partner-type').value=p.type||'Technology';
+      document.getElementById('agr-partner-contact').value=p.contact||'';
+      document.getElementById('agr-partner-email').value=p.email||'';
+    }
+  }
+}
+
+function togglePartnerNameEdit(){
+  const wrap=document.getElementById('ea-partner-name-wrap');
+  const btn=document.getElementById('ea-edit-name-btn');
+  const partnerId=document.getElementById('ea-partner').value;
+  const partners=getPartners();
+  const p=partners.find(x=>x.id===partnerId);
+  const isOpen=wrap.style.display!=='none';
+  if(isOpen){
+    wrap.style.display='none';
+    btn.textContent='✏ Edit Name';
+    btn.className='btn btn-sm btn-secondary';
+  } else {
+    wrap.style.display='block';
+    btn.textContent='✕ Cancel Edit';
+    btn.className='btn btn-sm btn-ghost';
+    // Populate with selected partner's current data
+    if(p){
+      document.getElementById('ea-partner-name').value=p.name;
+      document.getElementById('ea-partner-type').value=p.type||'Reseller';
+      document.getElementById('ea-partner-contact').value=p.contact||'';
+      document.getElementById('ea-partner-email').value=p.email||'';
+    }
+  }
+}
+
+let pendingEditFileData = null;
+let pendingEditFileName = null;
+let pendingEditFileMime = null;
+
+function attachFileToEdit(input){
+  const file = input.files[0];
+  if(!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  if(!['pdf','docx','doc','txt'].includes(ext)){
+    toast('Please select a PDF, Word, or text file','error'); return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const data = e.target.result;
+    const sizeBytes = data.length * 0.75;
+    if(sizeBytes > 4 * 1024 * 1024){
+      toast('File too large to store (>4MB)','error'); return;
+    }
+    pendingEditFileData = data;
+    pendingEditFileName = file.name;
+    pendingEditFileMime = file.type || 'application/octet-stream';
+    const status = document.getElementById('ea-file-status');
+    if(status) status.textContent = `✓ ${file.name} ready to save`;
+  };
+  reader.readAsDataURL(file);
 }
 
 function updateAgreement(){
   const agreements=getAgreements();
   const idx=agreements.findIndex(a=>a.id===currentEditId);
   if(idx<0) return;
+
+  // If partner name edit panel is open, save those changes too
+  const nameWrap=document.getElementById('ea-partner-name-wrap');
+  const nameEditing=nameWrap&&nameWrap.style.display!=='none';
+  if(nameEditing){
+    const newName=document.getElementById('ea-partner-name').value.trim();
+    if(!newName){toast('Partner name cannot be empty','error');return;}
+    const partnerId=document.getElementById('ea-partner').value;
+    const partners=getPartners();
+    const pIdx=partners.findIndex(p=>p.id===partnerId);
+    if(pIdx>=0){
+      partners[pIdx].name=newName;
+      partners[pIdx].type=document.getElementById('ea-partner-type').value;
+      partners[pIdx].contact=document.getElementById('ea-partner-contact').value;
+      partners[pIdx].email=document.getElementById('ea-partner-email').value;
+      DB.set('partners',partners);
+    }
+  }
+
   agreements[idx]={...agreements[idx],
     partnerId:document.getElementById('ea-partner').value,
     type:document.getElementById('ea-type').value,
     start:document.getElementById('ea-start').value,
     end:document.getElementById('ea-end').value,
     revpct:Number(document.getElementById('ea-revpct').value)||0,
+    wingmanRevpct:Number(document.getElementById('ea-wingman-revpct').value)||0,
     autorenew:document.getElementById('ea-autorenew').value,
     status:document.getElementById('ea-status').value,
     notice:Number(document.getElementById('ea-notice').value)||30,
+    jurisdiction:document.getElementById('ea-jurisdiction').value,
+    manager:document.getElementById('ea-manager').value,
     notes:document.getElementById('ea-notes').value,
+    ...(pendingEditFileData ? {
+      sourceFileData: pendingEditFileData,
+      sourceFile: pendingEditFileName,
+      sourceFileMime: pendingEditFileMime,
+    } : {}),
   };
+  pendingEditFileData = null; pendingEditFileName = null; pendingEditFileMime = null;
   DB.set('agreements',agreements);
   closeModal('modal-edit-agreement');
-  toast('Agreement updated','success');
+  toast(nameEditing?'Agreement & partner updated':'Agreement updated','success');
   renderAgreements();
+  renderPartners();
+  renderDashboard();
+  // Re-open partner detail if we came from there
+  const savedPartnerId=agreements[idx].partnerId;
+  if(savedPartnerId) setTimeout(()=>openPartnerDetail(savedPartnerId),50);
 }
 
 function deleteAgreementCurrent(){
-  if(!confirm('Delete this agreement?')) return;
-  DB.set('agreements',getAgreements().filter(a=>a.id!==currentEditId));
-  closeModal('modal-edit-agreement');
-  toast('Agreement deleted');
-  renderAgreements();
+  showConfirm('Delete this agreement? This cannot be undone.', ()=>{
+    DB.set('agreements',getAgreements().filter(a=>a.id!==currentEditId));
+    closeModal('modal-edit-agreement');
+    toast('Agreement deleted');
+    renderAgreements();
+    renderDashboard();
+  });
 }
 
 function renewAgreement(id){
@@ -1893,11 +2790,12 @@ function renderLeads(){
 
   // populate partner filter
   const sel=document.getElementById('lead-filter-partner');
-  if(sel.options.length<=1){
-    getPartners().forEach(p=>{
-      const o=document.createElement('option');o.value=p.id;o.textContent=p.name;sel.appendChild(o);
-    });
-  }
+  const prevVal=sel.value;
+  sel.innerHTML='<option value="">All Partners</option>';
+  getPartners().forEach(p=>{
+    const o=document.createElement('option');o.value=p.id;o.textContent=p.name;sel.appendChild(o);
+  });
+  if(prevVal) sel.value=prevVal;
 
   // Stats
   const open=leads.filter(l=>!['Closed Won','Closed Lost'].includes(l.stage));
@@ -1922,7 +2820,7 @@ function renderLeads(){
 
   const tbody=document.getElementById('leads-tbody');
   if(!filtered.length){
-    tbody.innerHTML=`<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⟳</div><div class="empty-title">No leads found</div></div></td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">⟳</div><div class="empty-title">No leads found</div></div></td></tr>`;
     return;
   }
 
@@ -1938,6 +2836,7 @@ function renderLeads(){
       </div></td>
       <td>${statusBadge(l.stage)}</td>
       <td class="mono">${fmtCcy(l.value)}</td>
+      <td>${l.feeType==='wingman'?'<span class="badge badge-blue" style="font-size:.7rem">Wingman</span>':'<span class="badge badge-green" style="font-size:.7rem">Closed Deal</span>'}</td>
       <td><div style="font-size:.78rem"><div class="mono">${l.revshare||0}%</div><div style="color:var(--accent);font-weight:600">${fmtCcy(commission)}</div></div></td>
       <td class="mono">${fmt(l.dateReferred)}</td>
       <td class="mono" style="color:var(--text3)">${fmt(l.lastActivity)}</td>
@@ -1950,19 +2849,55 @@ function renderLeads(){
   }).join('');
 }
 
+function getFeeRateForPartner(pid, feeType){
+  // First check most recent active agreement for this partner
+  const agreements=getAgreements().filter(a=>a.partnerId===pid&&a.status!=='Expired').sort((a,b)=>new Date(b.start)-new Date(a.start));
+  if(agreements.length){
+    const rate=feeType==='wingman'?agreements[0].wingmanRevpct:agreements[0].revpct;
+    if(rate) return {rate, source:'agreement'};
+  }
+  // Fall back to partner default
+  const p=getPartnerById(pid);
+  if(p){
+    const rate=feeType==='wingman'?p.wingmanRevshare:p.revshare;
+    if(rate) return {rate, source:'partner'};
+  }
+  return {rate:0, source:''};
+}
+
+function updateLeadFeeRate(){
+  const pid=document.getElementById('l-partner').value;
+  const feeType=document.getElementById('l-fee-type').value;
+  if(!pid) return;
+  const {rate, source}=getFeeRateForPartner(pid, feeType);
+  document.getElementById('l-revshare').value=rate||'';
+  document.getElementById('l-fee-source').textContent=source?`from ${source}`:'';
+}
+
+function updateEditLeadFeeRate(){
+  const pid=document.getElementById('el-partner')?.value;
+  const feeType=document.getElementById('el-fee-type')?.value;
+  if(!pid||!feeType) return;
+  const {rate}=getFeeRateForPartner(pid, feeType);
+  if(rate) document.getElementById('el-revshare').value=rate;
+}
+
 function saveLead(){
   const company=document.getElementById('l-company').value.trim();
   const pid=document.getElementById('l-partner').value;
   if(!company||!pid){toast('Company and partner required','error');return;}
   const leads=getLeads();
   const p=getPartnerById(pid);
+  const feeType=document.getElementById('l-fee-type').value;
+  const autoRate=feeType==='wingman'?p?.wingmanRevshare:p?.revshare;
   const newL={
     id:genId(),company,
     contact:document.getElementById('l-contact').value,
     email:document.getElementById('l-email').value,
     partnerId:pid,
     value:Number(document.getElementById('l-value').value)||0,
-    revshare:Number(document.getElementById('l-revshare').value)||p?.revshare||0,
+    feeType,
+    revshare:Number(document.getElementById('l-revshare').value)||autoRate||0,
     stage:document.getElementById('l-stage').value,
     dateReferred:document.getElementById('l-date').value||new Date().toISOString().slice(0,10),
     lastActivity:new Date().toISOString().slice(0,10),
@@ -1974,6 +2909,8 @@ function saveLead(){
   DB.set('leads',leads);
   closeModal('modal-add-lead');
   ['l-company','l-contact','l-email','l-value','l-revshare','l-close','l-hsid','l-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('l-fee-type').value='closed';
+  document.getElementById('l-fee-source').textContent='';
   toast('Lead logged','success');
   renderLeads();
   renderDashboard();
@@ -1990,9 +2927,10 @@ function editLead(id){
       <div class="form-group"><label>Company Name</label><input type="text" id="el-company" value="${l.company}"></div>
       <div class="form-group"><label>Contact Name</label><input type="text" id="el-contact" value="${l.contact||''}"></div>
       <div class="form-group"><label>Email</label><input type="email" id="el-email" value="${l.email||''}"></div>
-      <div class="form-group"><label>Referred By</label><select id="el-partner">${partners.map(p=>`<option value="${p.id}" ${p.id===l.partnerId?'selected':''}>${p.name}</option>`).join('')}</select></div>
+      <div class="form-group"><label>Referred By</label><select id="el-partner" onchange="updateEditLeadFeeRate()">${partners.map(p=>`<option value="${p.id}" ${p.id===l.partnerId?'selected':''}>${p.name}</option>`).join('')}</select></div>
       <div class="form-group"><label>Deal Value (£)</label><input type="number" id="el-value" value="${l.value}"></div>
-      <div class="form-group"><label>Rev Share %</label><input type="number" id="el-revshare" value="${l.revshare}"></div>
+      <div class="form-group"><label>Fee Type</label><select id="el-fee-type" onchange="updateEditLeadFeeRate()"><option value="closed" ${(l.feeType||'closed')==='closed'?'selected':''}>Closed Deal Fee</option><option value="wingman" ${l.feeType==='wingman'?'selected':''}>Wingman Closed Deal Fee</option></select></div>
+      <div class="form-group"><label>Fee Rate %</label><input type="number" id="el-revshare" value="${l.revshare}"><div class="input-hint">Auto-filled from partner — override if needed</div></div>
       <div class="form-group"><label>Stage</label><select id="el-stage">${['Referred','Contacted','Qualified','Proposal','Negotiation','Closed Won','Closed Lost'].map(s=>`<option ${s===l.stage?'selected':''}>${s}</option>`).join('')}</select></div>
       <div class="form-group"><label>Date Referred</label><input type="date" id="el-date" value="${l.dateReferred}"></div>
       <div class="form-group"><label>Expected Close Date</label><input type="date" id="el-close" value="${l.closeDate||''}"></div>
@@ -2012,6 +2950,7 @@ function updateLead(){
     email:document.getElementById('el-email').value,
     partnerId:document.getElementById('el-partner').value,
     value:Number(document.getElementById('el-value').value)||0,
+    feeType:document.getElementById('el-fee-type').value,
     revshare:Number(document.getElementById('el-revshare').value)||0,
     stage:document.getElementById('el-stage').value,
     dateReferred:document.getElementById('el-date').value,
@@ -2028,11 +2967,12 @@ function updateLead(){
 }
 
 function deleteLeadCurrent(){
-  if(!confirm('Delete this lead?')) return;
-  DB.set('leads',getLeads().filter(l=>l.id!==currentEditId));
-  closeModal('modal-edit-lead');
-  toast('Lead deleted');
-  renderLeads();
+  showConfirm('Delete this lead? This cannot be undone.', ()=>{
+    DB.set('leads',getLeads().filter(l=>l.id!==currentEditId));
+    closeModal('modal-edit-lead');
+    toast('Lead deleted');
+    renderLeads();
+  });
 }
 
 function advanceLead(id){
@@ -2289,19 +3229,463 @@ function saveHsConfig(){
   renderHubspot();
 }
 
-// ═══════════════════════════════════════════════════
-// SPLASH
-// ═══════════════════════════════════════════════════
-function dismissSplash(){
-  const s=document.getElementById('splash');
-  s.classList.add('fade-out');
-  setTimeout(()=>s.remove(),600);
-}
 
 // ═══════════════════════════════════════════════════
-// INIT
+// CONTRACT UPLOAD & AI EXTRACTION
 // ═══════════════════════════════════════════════════
+
+let contractFile = null;
+let contractFileBase64 = null;
+let contractFileMime = null;
+let contractText = '';
+
+// ── API KEY MANAGEMENT ──
+function getApiKey(){ return localStorage.getItem('ph_anthropic_key')||''; }
+
+function saveApiKey(){
+  const k = document.getElementById('api-key-input').value.trim();
+  if(!k){ toast('Please enter an API key','error'); return; }
+  if(!k.startsWith('sk-ant-')){ toast('Key should start with sk-ant-…','error'); return; }
+  localStorage.setItem('ph_anthropic_key', k);
+  toast('API key saved','success');
+  checkApiKey();
+}
+
+function checkApiKey(){
+  const key = getApiKey() || document.getElementById('api-key-input').value.trim();
+  const notice = document.getElementById('api-key-notice');
+  if(key && key.startsWith('sk-ant-')){
+    notice.style.background = 'var(--green-light)';
+    notice.style.borderColor = 'var(--green-border)';
+    notice.querySelector('strong').textContent = '✓ API Key Saved';
+  } else {
+    notice.style.background = '';
+    notice.style.borderColor = '';
+  }
+}
+
+function toggleKeyVisibility(){
+  const inp = document.getElementById('api-key-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+// ── DRAG & DROP ──
+function handleDragOver(e){
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.add('dragover');
+}
+function handleDragLeave(e){
+  document.getElementById('upload-zone').classList.remove('dragover');
+}
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if(file) processSelectedFile(file);
+}
+function handleFileSelect(e){
+  const file = e.target.files[0];
+  if(file) processSelectedFile(file);
+}
+
+function processSelectedFile(file){
+  const allowed = ['application/pdf','application/vnd.openxmlformats-officedocument.wordprocessingml.document','text/plain','application/msword'];
+  const ext = file.name.split('.').pop().toLowerCase();
+  if(!['pdf','docx','doc','txt'].includes(ext)){
+    toast('Please upload a PDF, Word document, or text file','error');
+    return;
+  }
+  contractFile = file;
+  contractFileMime = file.type || 'application/octet-stream';
+  // Read as base64 for storage
+  const reader = new FileReader();
+  reader.onload = e => { contractFileBase64 = e.target.result; }; // full data URL
+  reader.readAsDataURL(file);
+  document.getElementById('file-preview-name').textContent = file.name;
+  document.getElementById('file-preview-size').textContent = (file.size/1024).toFixed(1)+' KB · '+ext.toUpperCase();
+  document.getElementById('upload-step-1').style.display = 'none';
+  document.getElementById('upload-step-2').style.display = 'block';
+}
+
+function resetUpload(){
+  contractFile = null;
+  contractFileBase64 = null;
+  contractFileMime = null;
+  contractText = '';
+  document.getElementById('upload-step-1').style.display = 'block';
+  document.getElementById('upload-step-2').style.display = 'none';
+  document.getElementById('upload-step-3').classList.remove('show');
+  document.getElementById('upload-step-4').style.display = 'none';
+  document.getElementById('upload-save-btn').style.display = 'none';
+  document.getElementById('contract-file-input').value = '';
+}
+
+function closeUploadModal(){
+  closeModal('modal-upload-contract');
+  setTimeout(resetUpload, 300);
+}
+
+// ── TEXT EXTRACTION ──
+async function extractTextFromFile(file){
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  if(ext === 'txt'){
+    return await file.text();
+  }
+
+  if(ext === 'pdf'){
+    return await extractTextFromPDF(file);
+  }
+
+  if(ext === 'docx'){
+    return await extractTextFromDocx(file);
+  }
+
+  // Fallback: try reading as text
+  return await file.text();
+}
+
+async function extractTextFromPDF(file){
+  // Load pdf.js dynamically
+  if(!window.pdfjsLib){
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
+  setExtractStatus('Reading PDF pages…', 'Extracting text content');
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await window.pdfjsLib.getDocument({data: arrayBuffer}).promise;
+  let text = '';
+  const maxPages = Math.min(pdf.numPages, 15); // cap at 15 pages to keep context manageable
+  for(let i = 1; i <= maxPages; i++){
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map(s=>s.str).join(' ') + '\n';
+    setExtractStatus(`Reading PDF pages… (${i}/${maxPages})`, 'Extracting text content');
+  }
+  return text.trim();
+}
+
+async function extractTextFromDocx(file){
+  // Load mammoth.js dynamically
+  if(!window.mammoth){
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js');
+  }
+  setExtractStatus('Reading Word document…', 'Extracting text content');
+  const arrayBuffer = await file.arrayBuffer();
+  const result = await window.mammoth.extractRawText({arrayBuffer});
+  return result.value.trim();
+}
+
+function loadScript(src){
+  return new Promise((resolve, reject) => {
+    if(document.querySelector(`script[src="${src}"]`)){ resolve(); return; }
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+function setExtractStatus(label, sub){
+  document.getElementById('extract-status-label').textContent = label;
+  document.getElementById('extract-status-sub').textContent = sub;
+}
+
+// ── MAIN EXTRACTION FLOW ──
+async function extractFromContract(){
+  const apiKey = getApiKey();
+  if(!apiKey){
+    toast('Please save your Anthropic API key first','error');
+    document.getElementById('api-key-input').focus();
+    return;
+  }
+  if(!contractFile){ toast('No file selected','error'); return; }
+
+  // Show spinner
+  document.getElementById('upload-step-2').style.display = 'none';
+  const step3 = document.getElementById('upload-step-3');
+  step3.classList.add('show');
+  setExtractStatus('Reading document…', 'Preparing file');
+
+  try {
+    // 1. Extract text
+    contractText = await extractTextFromFile(contractFile);
+
+    if(!contractText || contractText.length < 50){
+      throw new Error('Could not extract readable text from this document. Try a text-based PDF or .docx file.');
+    }
+
+    // Trim to ~12000 chars to stay within token limits
+    const trimmed = contractText.slice(0, 12000);
+
+    // 2. Call Claude API
+    setExtractStatus('Analysing with Claude AI…', 'Identifying parties, dates & terms');
+
+    const prompt = `You are a contract analysis assistant. Extract the following information from this contract/agreement document. Return ONLY a valid JSON object with exactly these fields (use null for any field you cannot find):
+
+{
+  "partner_company": "Legal name of the partner/vendor/client company (not the company issuing this contract)",
+  "agreement_type": "Type of agreement — pick the closest from: Referral Agreement, Reseller Agreement, Technology Partnership, Agency Agreement, Affiliate Agreement, NDA, MSA, or describe it briefly",
+  "signatory_name": "Full name of the person who signed on behalf of the partner company",
+  "signatory_title": "Job title of the signatory (e.g. CEO, VP Sales)",
+  "our_signatory": "Full name of the person who signed on our behalf",
+  "date_signed": "Date the contract was signed, in YYYY-MM-DD format",
+  "effective_date": "Date the agreement becomes effective/starts, in YYYY-MM-DD format",
+  "expiry_date": "Date the agreement expires or ends, in YYYY-MM-DD format",
+  "term_duration": "Duration of the agreement as stated in the contract (e.g. '12 months', '2 years', '24 months')",
+  "auto_renew": "Does it auto-renew? Return 'yes' or 'no'",
+  "closed_deal_fee_pct": "Closed deal fee or primary revenue share percentage as a number (e.g. 20 for 20%), or null if not mentioned",
+  "wingman_fee_pct": "Wingman or secondary closed deal fee percentage as a number, or null if not mentioned",
+  "governing_law": "Governing law / jurisdiction clause (e.g. 'England and Wales', 'State of Delaware')",
+  "partner_manager": "Name of the partner manager or account manager responsible for this agreement, or null if not mentioned",
+  "primary_contact_name": "Full name of the primary contact person at the partner company, or null if not mentioned",
+  "primary_contact_email": "Email address of the primary contact at the partner company, or null if not mentioned",
+  "key_terms_summary": "A concise 3-5 sentence summary of the most important obligations, restrictions, payment terms, and any notable clauses",
+  "confidence": "Your overall confidence in these extractions: high, medium, or low"
+}
+
+CONTRACT TEXT:
+---
+${trimmed}
+---
+
+Return only the JSON object, no explanation, no markdown code blocks.`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-calls': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if(!response.ok){
+      const err = await response.json();
+      throw new Error(err.error?.message || `API error ${response.status}`);
+    }
+
+    const data = await response.json();
+    let raw = data.content[0].text.trim();
+
+    // Strip markdown fences if present
+    raw = raw.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+
+    const extracted = JSON.parse(raw);
+
+    // 3. Show results
+    step3.classList.remove('show');
+    renderExtractedResults(extracted);
+
+  } catch(err){
+    step3.classList.remove('show');
+    document.getElementById('upload-step-2').style.display = 'block';
+    toast('Extraction failed: ' + err.message, 'error');
+    console.error('Extraction error:', err);
+  }
+}
+
+function renderExtractedResults(data){
+  // Populate summary badge
+  const confidence = data.confidence || 'medium';
+  const confColor = confidence === 'high' ? 'var(--green)' : confidence === 'medium' ? 'var(--yellow)' : 'var(--red)';
+  const filledPips = confidence === 'high' ? 5 : confidence === 'medium' ? 3 : 1;
+
+  const fields = [
+    ['Partner Company', data.partner_company],
+    ['Agreement Type', data.agreement_type],
+    ['Signatory', data.signatory_name],
+    ['Signatory Title', data.signatory_title],
+    ['Date Signed', data.date_signed],
+    ['Effective Date', data.effective_date],
+    ['Expiry Date', data.expiry_date],
+    ['Term', data.term_duration],
+    ['Closed Deal Fee', data.closed_deal_fee_pct ? data.closed_deal_fee_pct+'%' : null],
+    ['Wingman Fee', data.wingman_fee_pct ? data.wingman_fee_pct+'%' : null],
+    ['Auto-Renew', data.auto_renew],
+    ['Partner Manager', data.partner_manager],
+    ['Primary Contact', data.primary_contact_name],
+    ['Contact Email', data.primary_contact_email],
+  ].filter(([,v]) => v && v !== 'null');
+
+  document.getElementById('extracted-summary').innerHTML = `
+    <div class="extracted-header">
+      <span>✦</span>
+      <span>Claude extracted ${fields.length} fields from your contract</span>
+      <span style="margin-left:auto;display:flex;align-items:center;gap:.3rem">
+        <span style="font-size:.68rem;color:${confColor};font-weight:700">${confidence.toUpperCase()} CONFIDENCE</span>
+        ${[1,2,3,4,5].map(i=>`<div class="confidence-pip ${i<=filledPips?'filled':''}"></div>`).join('')}
+      </span>
+    </div>
+    <div class="extracted-grid">
+      ${fields.map(([k,v])=>`
+        <div class="extracted-item">
+          <div class="extracted-key">${k}</div>
+          <div class="extracted-val">${v||'—'}</div>
+        </div>`).join('')}
+    </div>`;
+
+  // Pre-fill the form
+  populatePartnerSelectsForUpload();
+
+  // Try to match partner by company name
+  if(data.partner_company){
+    const partners = getPartners();
+    const match = partners.find(p =>
+      p.name.toLowerCase().includes(data.partner_company.toLowerCase()) ||
+      data.partner_company.toLowerCase().includes(p.name.toLowerCase())
+    );
+    if(match){
+      document.getElementById('agr2-partner').value = match.id;
+    }
+  }
+
+  // Set agreement type
+  if(data.agreement_type){
+    const sel = document.getElementById('agr2-type');
+    const types = Array.from(sel.options).map(o=>o.value);
+    const match = types.find(t => t.toLowerCase().includes(data.agreement_type.toLowerCase().split(' ')[0]));
+    if(match) sel.value = match;
+    else {
+      // Add the extracted type as a new option
+      const opt = document.createElement('option');
+      opt.value = data.agreement_type;
+      opt.textContent = data.agreement_type;
+      opt.selected = true;
+      sel.appendChild(opt);
+    }
+  }
+
+  setVal('agr2-company', data.partner_company);
+  setVal('agr2-signatory', data.signatory_name);
+  setVal('agr2-signatory-title', data.signatory_title);
+  setVal('agr2-signed', data.date_signed);
+  setVal('agr2-start', data.effective_date);
+  setVal('agr2-end', data.expiry_date);
+  setVal('agr2-duration', data.term_duration);
+  if(data.closed_deal_fee_pct) setVal('agr2-revpct', data.closed_deal_fee_pct);
+  if(data.wingman_fee_pct) setVal('agr2-wingman-revpct', data.wingman_fee_pct);
+  if(data.auto_renew) document.getElementById('agr2-autorenew').value = data.auto_renew === 'yes' ? 'yes' : 'no';
+  setVal('agr2-jurisdiction', data.governing_law);
+  setVal('agr2-manager', data.partner_manager);
+  setVal('agr2-contact-name', data.primary_contact_name);
+  setVal('agr2-contact-email', data.primary_contact_email);
+  setVal('agr2-notes', data.key_terms_summary);
+
+  // Show form
+  document.getElementById('upload-step-4').style.display = 'block';
+  document.getElementById('upload-save-btn').style.display = 'inline-flex';
+}
+
+function setVal(id, val){
+  const el = document.getElementById(id);
+  if(el && val && val !== 'null') el.value = val;
+}
+
+function populatePartnerSelectsForUpload(){
+  const sel = document.getElementById('agr2-partner');
+  const partners = getPartners();
+  sel.innerHTML = '<option value="">— Select or create partner —</option>' +
+    partners.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+}
+
+function saveExtractedAgreement(){
+  const pid = document.getElementById('agr2-partner').value;
+  const start = document.getElementById('agr2-start').value;
+  const end = document.getElementById('agr2-end').value;
+
+  if(!start || !end){
+    toast('Effective date and expiry date are required','error');
+    return;
+  }
+
+  const agreements = getAgreements();
+  const newA = {
+    id: genId(),
+    partnerId: pid || null,
+    type: document.getElementById('agr2-type').value,
+    start,
+    end,
+    revpct: Number(document.getElementById('agr2-revpct').value)||0,
+    wingmanRevpct: Number(document.getElementById('agr2-wingman-revpct').value)||0,
+    autorenew: document.getElementById('agr2-autorenew').value,
+    notice: 30,
+    status: 'Active',
+    notes: document.getElementById('agr2-notes').value,
+    // Extra fields from extraction
+    signatory: document.getElementById('agr2-signatory').value,
+    signatoryTitle: document.getElementById('agr2-signatory-title').value,
+    dateSigned: document.getElementById('agr2-signed').value,
+    duration: document.getElementById('agr2-duration').value,
+    jurisdiction: document.getElementById('agr2-jurisdiction').value,
+    manager: document.getElementById('agr2-manager').value,
+    primaryContact: document.getElementById('agr2-contact-name').value,
+    primaryContactEmail: document.getElementById('agr2-contact-email').value,
+    partnerCompany: document.getElementById('agr2-company').value,
+    sourceFile: contractFile?.name || '',
+    sourceFileData: null, // set below after size check
+    sourceFileMime: contractFileMime || null,
+    extractedAt: new Date().toISOString(),
+  };
+
+  // If no partner selected but we have a company name, auto-create the partner
+  if(!newA.partnerId && newA.partnerCompany){
+    const newPartner = {
+      id: genId(),
+      name: newA.partnerCompany,
+      type: 'Technology',
+      contact: document.getElementById('agr2-contact-name').value || '',
+      email: document.getElementById('agr2-contact-email').value || '',
+      manager: document.getElementById('agr2-manager').value || '',
+      status: 'Active',
+      createdAt: new Date().toISOString(),
+    };
+    const partners = getPartners();
+    partners.push(newPartner);
+    DB.set('partners', partners);
+    newA.partnerId = newPartner.id;
+    toast(`Partner "${newPartner.name}" created and linked ✓`, 'success');
+  }
+
+  // Attach file data if within localStorage size limits (~4MB base64 safe)
+  if(contractFileBase64){
+    const sizeBytes = contractFileBase64.length * 0.75; // approx decoded size
+    if(sizeBytes < 4 * 1024 * 1024){
+      newA.sourceFileData = contractFileBase64;
+    } else {
+      toast('File too large to store (>4MB) — agreement saved without attachment', '');
+    }
+  }
+
+  agreements.push(newA);
+  DB.set('agreements', agreements);
+  // Verify it saved (localStorage can silently truncate)
+  const saved = getAgreements().find(a=>a.id===newA.id);
+  if(saved && !saved.sourceFileData && contractFileBase64 && newA.sourceFileData){
+    toast('Storage full — agreement saved but file attachment could not be stored', '');
+  }
+  closeUploadModal();
+  toast('Agreement saved from contract ✓', 'success');
+  renderAgreements();
+  renderDashboard();
+}
+
+// Initialise API key notice on load
+document.addEventListener('DOMContentLoaded', () => {
+  const k = getApiKey();
+  if(k) document.getElementById('api-key-input').value = k;
+  checkApiKey();
+});
+
 seedData();
+applyProfile();
 renderDashboard();
 </script>
 </body>
