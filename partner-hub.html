@@ -496,6 +496,58 @@ canvas{width:100%!important}
 .file-preview-name{font-size:.82rem;font-weight:600;flex:1}
 .file-preview-size{font-size:.72rem;color:var(--text3)}
 
+/* ── MIGRATION ── */
+.mig-table{width:100%;border-collapse:collapse}
+.mig-table th{
+  background:var(--bg);font-size:.7rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--text3);
+  padding:.65rem 1rem;text-align:left;border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+.mig-table td{
+  padding:.7rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);
+  vertical-align:middle;
+}
+.mig-table tr:hover td{background:var(--bg)}
+.mig-company-row{cursor:pointer}
+.mig-company-row td:first-child{display:flex;align-items:center;gap:.6rem}
+.mig-expand{
+  font-size:.7rem;width:20px;height:20px;border-radius:4px;
+  border:1px solid var(--border);background:none;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:transform .15s;color:var(--text3);flex-shrink:0;
+}
+.mig-expand.open{transform:rotate(90deg)}
+.mig-deal-row td{padding-left:3.5rem;background:var(--surface2);font-size:.78rem}
+.mig-deal-row td:first-child{border-left:3px solid var(--accent-border)}
+.mig-check{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+.mig-badge-migrated{
+  display:inline-flex;align-items:center;gap:.3rem;
+  padding:.2rem .55rem;border-radius:20px;font-size:.68rem;font-weight:700;
+  background:var(--green-light);color:var(--green);border:1px solid var(--green-border);
+}
+.mig-action-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 0;gap:1rem;flex-wrap:wrap;
+}
+.mig-count{
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-size:.82rem;font-weight:600;color:var(--text2);
+}
+.mig-count .num{
+  background:var(--accent);color:#fff;border-radius:20px;
+  font-size:.7rem;padding:1px 7px;font-weight:700;
+}
+.mig-status{
+  padding:.75rem 1rem;border-radius:var(--radius);margin-bottom:1rem;
+  font-size:.82rem;display:flex;align-items:center;gap:.6rem;
+}
+.mig-loading{
+  display:inline-block;width:16px;height:16px;
+  border:2px solid var(--border);border-top-color:var(--accent);
+  border-radius:50%;animation:spin .6s linear infinite;
+}
+
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -559,6 +611,9 @@ canvas{width:100%!important}
     <div class="sidebar-section-label">Integrations</div>
     <div class="nav-item" data-page="hubspot">
       <span class="nav-icon">⟐</span> HubSpot Sync
+    </div>
+    <div class="nav-item" data-page="migration">
+      <span class="nav-icon">↓</span> Migration
     </div>
   </div>
 
@@ -889,6 +944,30 @@ canvas{width:100%!important}
     </div>
   </div>
 
+  <!-- ═══════════════════ MIGRATION ═══════════════════ -->
+  <div class="page" id="page-migration">
+    <div class="topbar">
+      <div>
+        <span class="topbar-title">HubSpot Migration</span>
+        <span class="topbar-sub">Import companies & deals from HubSpot CRM</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="fetchHubSpotCompanies()" id="mig-fetch-btn">↓ Fetch Companies</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <div id="mig-status"></div>
+      <div id="mig-action-bar"></div>
+      <div id="mig-content">
+        <div class="empty-state">
+          <div class="empty-icon">↓</div>
+          <div class="empty-title">No companies fetched yet</div>
+          <div class="empty-sub">Configure your HubSpot token in HubSpot Sync → Configure, then click "Fetch Companies" above.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <!-- ═══════════ MODALS ═══════════ -->
@@ -1203,7 +1282,7 @@ canvas{width:100%!important}
       <button class="modal-close" onclick="closeModal('modal-hs-connect')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="alert alert-warn"><span class="alert-icon">ℹ</span><div class="alert-text"><strong>Mock Mode</strong>This is a simulated integration. In production, you would enter your HubSpot Private App token to enable live syncing.</div></div>
+      <div class="alert alert-warn"><span class="alert-icon">ℹ</span><div class="alert-text"><strong>Configuration</strong>Enter your HubSpot Private App token to enable live API access. The CORS proxy is required for browser-based API calls. Sync features on this page are simulated; use the Migration page for real imports.</div></div>
       <div class="form-grid single">
         <div class="form-group">
           <label>HubSpot Portal ID</label>
@@ -1213,6 +1292,11 @@ canvas{width:100%!important}
           <label>Private App Token</label>
           <input type="password" id="hs-token" placeholder="pat-na1-••••••••" value="pat-na1-mock-token-xxxx">
           <div class="input-hint">Generate from HubSpot → Settings → Private Apps</div>
+        </div>
+        <div class="form-group">
+          <label>CORS Proxy URL</label>
+          <input type="text" id="hs-proxy" placeholder="https://corsproxy.io/?" value="https://corsproxy.io/?">
+          <div class="input-hint">Required for browser-based API calls. Leave default or use your own proxy.</div>
         </div>
         <div class="form-group">
           <label>Deal Stage Mapping — "Referred"</label>
@@ -1736,6 +1820,7 @@ function navigate(page){
     referrals:renderLeads,
     revshare:renderRevShare,
     hubspot:renderHubspot,
+    migration:renderMigration,
   };
   if(renders[page]) renders[page]();
 }
@@ -1751,6 +1836,12 @@ function openModal(id){
   if(id==='modal-add-agreement'||id==='modal-add-lead') {
     populatePartnerSelects();
     if(id==='modal-add-lead') setTimeout(updateLeadFeeRate, 0);
+  }
+  if(id==='modal-hs-connect'){
+    const cfg=DB.get('hs-config')||{};
+    if(cfg.portal) document.getElementById('hs-portal').value=cfg.portal;
+    if(cfg.token) document.getElementById('hs-token').value=cfg.token;
+    document.getElementById('hs-proxy').value=cfg.proxyUrl||'https://corsproxy.io/?';
   }
   document.getElementById(id).classList.add('open');
 }
@@ -3223,12 +3314,354 @@ function simulateHubSpotSync(){
 }
 
 function saveHsConfig(){
-  DB.set('hs-config',{connected:true,portal:document.getElementById('hs-portal').value});
+  DB.set('hs-config',{
+    connected:true,
+    portal:document.getElementById('hs-portal').value,
+    token:document.getElementById('hs-token').value,
+    proxyUrl:document.getElementById('hs-proxy').value||'https://corsproxy.io/?',
+  });
   closeModal('modal-hs-connect');
-  toast('HubSpot configuration saved (mock mode)','success');
+  toast('HubSpot configuration saved','success');
   renderHubspot();
 }
 
+// ═══════════════════════════════════════════════════
+// MIGRATION — HubSpot Import
+// ═══════════════════════════════════════════════════
+let hsCompanies=[];
+let hsCompanyDeals={};
+let migExpandedRows=new Set();
+let migSelectedIds=new Set();
+
+function mapHsDealStage(hsStage){
+  const s=(hsStage||'').toLowerCase();
+  const map={
+    'appointmentscheduled':'Contacted',
+    'qualifiedtobuy':'Qualified',
+    'presentationscheduled':'Proposal',
+    'decisionmakerboughtin':'Negotiation',
+    'contractsent':'Negotiation',
+    'closedwon':'Closed Won',
+    'closedlost':'Closed Lost',
+  };
+  return map[s]||'Referred';
+}
+
+function getHsConfig(){
+  const c=DB.get('hs-config')||{};
+  return {
+    token:c.token||'',
+    proxyUrl:c.proxyUrl||'https://corsproxy.io/?',
+    portal:c.portal||'',
+    connected:!!c.connected,
+  };
+}
+
+async function fetchHubSpotCompanies(){
+  const cfg=getHsConfig();
+  if(!cfg.token||cfg.token==='pat-na1-mock-token-xxxx'){
+    toast('Please configure a real HubSpot Private App Token first','error');
+    return;
+  }
+
+  const statusEl=document.getElementById('mig-status');
+  statusEl.innerHTML=`<div class="mig-status" style="background:var(--blue-light);border:1px solid var(--blue-border);color:var(--blue)"><span class="mig-loading"></span>Fetching companies from HubSpot...</div>`;
+  document.getElementById('mig-fetch-btn').disabled=true;
+
+  const proxy=cfg.proxyUrl;
+  const baseUrl='https://api.hubapi.com/crm/v3/objects/companies';
+  const props='name,domain,phone,industry,city,country,hs_object_id';
+  let allCompanies=[];
+  let after=null;
+
+  try{
+    // Fetch all companies with pagination
+    do{
+      let url=`${baseUrl}?limit=100&properties=${props}`;
+      if(after) url+=`&after=${after}`;
+      const resp=await fetch(proxy+encodeURIComponent(url),{
+        headers:{'Authorization':`Bearer ${cfg.token}`,'Content-Type':'application/json'}
+      });
+      if(!resp.ok){
+        const err=await resp.text();
+        throw new Error(`API error ${resp.status}: ${err.slice(0,200)}`);
+      }
+      const data=await resp.json();
+      allCompanies=allCompanies.concat(data.results||[]);
+      after=data.paging?.next?.after||null;
+    }while(after);
+
+    statusEl.innerHTML=`<div class="mig-status" style="background:var(--blue-light);border:1px solid var(--blue-border);color:var(--blue)"><span class="mig-loading"></span>Fetched ${allCompanies.length} companies. Loading deals...</div>`;
+
+    // Fetch all deals at once
+    const dealMap=await fetchAllDeals(cfg);
+
+    // Fetch company-to-deal associations
+    hsCompanyDeals={};
+    for(const company of allCompanies){
+      const cid=company.id;
+      try{
+        const assocUrl=`https://api.hubapi.com/crm/v3/objects/companies/${cid}/associations/deals`;
+        const aResp=await fetch(proxy+encodeURIComponent(assocUrl),{
+          headers:{'Authorization':`Bearer ${cfg.token}`}
+        });
+        if(aResp.ok){
+          const aData=await aResp.json();
+          const dealIds=(aData.results||[]).map(r=>r.id||r.toObjectId||String(r));
+          hsCompanyDeals[cid]=dealIds.map(did=>dealMap[did]).filter(Boolean);
+        }else{
+          hsCompanyDeals[cid]=[];
+        }
+      }catch{
+        hsCompanyDeals[cid]=[];
+      }
+    }
+
+    hsCompanies=allCompanies;
+    migSelectedIds.clear();
+    migExpandedRows.clear();
+
+    statusEl.innerHTML=`<div class="mig-status" style="background:var(--green-light);border:1px solid var(--green-border);color:var(--green)">&#10003; Fetched ${allCompanies.length} companies and ${Object.values(dealMap).length} deals from HubSpot</div>`;
+    renderMigrationTable();
+  }catch(e){
+    statusEl.innerHTML=`<div class="mig-status" style="background:var(--red-light);border:1px solid var(--red-border);color:var(--red)">&#10005; ${e.message}</div>`;
+  }finally{
+    document.getElementById('mig-fetch-btn').disabled=false;
+  }
+}
+
+async function fetchAllDeals(cfg){
+  const proxy=cfg.proxyUrl;
+  const baseUrl='https://api.hubapi.com/crm/v3/objects/deals';
+  const props='dealname,amount,dealstage,pipeline,closedate,createdate,hs_object_id';
+  const dealMap={};
+  let after=null;
+  do{
+    let url=`${baseUrl}?limit=100&properties=${props}`;
+    if(after) url+=`&after=${after}`;
+    const resp=await fetch(proxy+encodeURIComponent(url),{
+      headers:{'Authorization':`Bearer ${cfg.token}`,'Content-Type':'application/json'}
+    });
+    if(!resp.ok) break;
+    const data=await resp.json();
+    (data.results||[]).forEach(d=>{dealMap[d.id]=d});
+    after=data.paging?.next?.after||null;
+  }while(after);
+  return dealMap;
+}
+
+function renderMigration(){
+  if(hsCompanies.length){
+    renderMigrationTable();
+  }
+  // Load saved config values into modal fields
+  const cfg=getHsConfig();
+  const tokenEl=document.getElementById('hs-token');
+  const proxyEl=document.getElementById('hs-proxy');
+  if(tokenEl&&cfg.token) tokenEl.value=cfg.token;
+  if(proxyEl&&cfg.proxyUrl) proxyEl.value=cfg.proxyUrl;
+}
+
+function renderMigrationTable(){
+  const partners=getPartners();
+  const existingHsids=new Set(partners.map(p=>p.hsid).filter(Boolean));
+  const content=document.getElementById('mig-content');
+  const actionBar=document.getElementById('mig-action-bar');
+
+  if(!hsCompanies.length){
+    content.innerHTML=`<div class="empty-state"><div class="empty-icon">↓</div><div class="empty-title">No companies fetched yet</div><div class="empty-sub">Configure your HubSpot token in HubSpot Sync → Configure, then click "Fetch Companies" above.</div></div>`;
+    actionBar.innerHTML='';
+    return;
+  }
+
+  // Action bar
+  const selectedCount=migSelectedIds.size;
+  actionBar.innerHTML=`
+    <div class="mig-count">
+      <span>${hsCompanies.length} companies found</span>
+      ${selectedCount>0?`<span> · <strong>${selectedCount}</strong> selected</span>`:''}
+    </div>
+    <div style="display:flex;gap:.5rem;align-items:center">
+      <button class="btn btn-sm btn-secondary" onclick="migSelectAll()">Select All</button>
+      <button class="btn btn-sm btn-secondary" onclick="migDeselectAll()">Deselect All</button>
+      <button class="btn btn-primary ${selectedCount===0?'btn-secondary':''}" onclick="migrateSelected()" ${selectedCount===0?'disabled':''}>
+        ↓ Migrate Selected ${selectedCount>0?`<span class="num" style="background:#fff;color:var(--accent);border-radius:20px;padding:0 6px;font-size:.7rem;margin-left:.3rem">${selectedCount}</span>`:''}
+      </button>
+    </div>`;
+
+  // Table
+  let rows='';
+  hsCompanies.forEach(c=>{
+    const p=c.properties||{};
+    const hsid=c.id;
+    const alreadyMigrated=existingHsids.has(hsid)||existingHsids.has(String(hsid));
+    const deals=hsCompanyDeals[hsid]||[];
+    const isExpanded=migExpandedRows.has(hsid);
+    const isChecked=migSelectedIds.has(hsid);
+    const companyName=p.name||'Unnamed Company';
+
+    rows+=`<tr class="mig-company-row">
+      <td>
+        <input type="checkbox" class="mig-check" ${isChecked?'checked':''} ${alreadyMigrated?'disabled':''} onchange="migToggle('${hsid}',this.checked)" onclick="event.stopPropagation()">
+        <button class="mig-expand ${isExpanded?'open':''}" onclick="migToggleExpand('${hsid}')" title="Show deals">▶</button>
+        <div>
+          <div style="font-weight:600">${companyName}</div>
+          <div style="font-size:.72rem;color:var(--text3)">${p.domain||''}</div>
+        </div>
+      </td>
+      <td style="font-size:.78rem;color:var(--text2)">${p.industry||'—'}</td>
+      <td style="font-size:.78rem;color:var(--text2)">${[p.city,p.country].filter(Boolean).join(', ')||'—'}</td>
+      <td style="text-align:center;font-weight:600">${deals.length}</td>
+      <td>${alreadyMigrated?'<span class="mig-badge-migrated">&#10003; Migrated</span>':''}</td>
+    </tr>`;
+
+    // Deal sub-rows
+    if(isExpanded&&deals.length){
+      deals.forEach(d=>{
+        const dp=d.properties||{};
+        rows+=`<tr class="mig-deal-row">
+          <td>${dp.dealname||'Untitled Deal'}</td>
+          <td class="mono">${dp.amount?fmtCcy(Number(dp.amount)):'—'}</td>
+          <td><span class="tag">${mapHsDealStage(dp.dealstage)}</span></td>
+          <td class="mono" style="font-size:.75rem">${dp.closedate?fmt(dp.closedate):'—'}</td>
+          <td></td>
+        </tr>`;
+      });
+    }else if(isExpanded){
+      rows+=`<tr class="mig-deal-row"><td colspan="5" style="color:var(--text3);font-style:italic">No deals associated</td></tr>`;
+    }
+  });
+
+  content.innerHTML=`
+    <div class="table-wrap">
+      <table class="mig-table">
+        <thead><tr>
+          <th>Company</th>
+          <th>Industry</th>
+          <th>Location</th>
+          <th style="text-align:center">Deals</th>
+          <th>Status</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+function migToggle(hsid,checked){
+  if(checked) migSelectedIds.add(hsid);
+  else migSelectedIds.delete(hsid);
+  renderMigrationTable();
+}
+
+function migToggleExpand(hsid){
+  if(migExpandedRows.has(hsid)) migExpandedRows.delete(hsid);
+  else migExpandedRows.add(hsid);
+  renderMigrationTable();
+}
+
+function migSelectAll(){
+  const partners=getPartners();
+  const existingHsids=new Set(partners.map(p=>p.hsid).filter(Boolean));
+  hsCompanies.forEach(c=>{
+    const hsid=c.id;
+    if(!existingHsids.has(hsid)&&!existingHsids.has(String(hsid))){
+      migSelectedIds.add(hsid);
+    }
+  });
+  renderMigrationTable();
+}
+
+function migDeselectAll(){
+  migSelectedIds.clear();
+  renderMigrationTable();
+}
+
+function migrateSelected(){
+  if(!migSelectedIds.size){toast('No companies selected','error');return;}
+
+  const partners=getPartners();
+  const leads=getLeads();
+  const existingHsids=new Set(partners.map(p=>p.hsid).filter(Boolean));
+  const today=new Date().toISOString().slice(0,10);
+
+  let newPartners=0, newLeads=0, skipped=0;
+
+  hsCompanies.forEach(c=>{
+    if(!migSelectedIds.has(c.id)) return;
+    const hsid=c.id;
+
+    // Skip if already migrated
+    if(existingHsids.has(hsid)||existingHsids.has(String(hsid))){
+      skipped++;
+      return;
+    }
+
+    const p=c.properties||{};
+    const companyName=p.name||'Unnamed Company';
+    const partnerId=genId();
+
+    // Create partner
+    const newPartner={
+      id:partnerId,
+      name:companyName,
+      type:'Referral',
+      contact:'',
+      email:'',
+      phone:p.phone||'',
+      website:p.domain||'',
+      region:[p.city,p.country].filter(Boolean).join(', '),
+      status:'Onboarding',
+      revshare:0,
+      hsid:String(hsid),
+      notes:'Migrated from HubSpot',
+      color:avatarColor(companyName),
+      created:today,
+    };
+    partners.push(newPartner);
+    existingHsids.add(String(hsid));
+    newPartners++;
+
+    // Create leads from associated deals
+    const deals=hsCompanyDeals[hsid]||[];
+    deals.forEach(d=>{
+      const dp=d.properties||{};
+      const newLead={
+        id:genId(),
+        company:dp.dealname||companyName,
+        contact:'',
+        email:'',
+        partnerId:partnerId,
+        value:Number(dp.amount)||0,
+        revshare:0,
+        stage:mapHsDealStage(dp.dealstage),
+        dateReferred:dp.createdate?dp.createdate.slice(0,10):today,
+        lastActivity:today,
+        closeDate:dp.closedate?dp.closedate.slice(0,10):'',
+        hsid:d.id?String(d.id):'',
+        notes:'Migrated from HubSpot',
+      };
+      leads.push(newLead);
+      newLeads++;
+    });
+  });
+
+  DB.set('partners',partners);
+  DB.set('leads',leads);
+
+  // Log the migration event
+  const log=getHsLog();
+  log.unshift({
+    time:new Date().toISOString().slice(0,16).replace('T',' '),
+    action:'Migration completed',
+    detail:`${newPartners} partners and ${newLeads} deals imported from HubSpot${skipped>0?` (${skipped} duplicates skipped)`:''}`,
+    type:'success'
+  });
+  DB.set('hslog',log);
+
+  migSelectedIds.clear();
+  toast(`Migrated ${newPartners} partners and ${newLeads} deals${skipped>0?` (${skipped} skipped)`:''}`,'success');
+  renderMigrationTable();
+}
 
 // ═══════════════════════════════════════════════════
 // CONTRACT UPLOAD & AI EXTRACTION
